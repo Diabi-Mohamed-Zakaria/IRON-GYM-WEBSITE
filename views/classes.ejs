@@ -1,0 +1,81 @@
+<%- include('partials/header') %>
+
+<section class="page-header">
+    <div class="container">
+        <h1>OUR <span class="gold-gradient">CLASSES</span></h1>
+        <p class="lead">Find the perfect class for your fitness goals</p>
+        <div class="gold-line center"></div>
+    </div>
+</section>
+
+<section class="classes-section py-5">
+    <div class="container">
+        <!-- Search Bar -->
+        <div class="row mb-4">
+            <div class="col-md-6 mx-auto">
+                <div class="input-group">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Search classes, trainers...">
+                    <button class="btn btn-warning" id="search-classes-btn">
+                        <i class="bi bi-search"></i> Search
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Classes Grid -->
+        <div class="row g-4" id="classesContainer">
+            <% if (classes && classes.length > 0) { %>
+                <% classes.forEach(cls => { %>
+                    <div class="col-md-6 col-lg-4 class-item">
+                        <div class="card bg-dark text-light h-100">
+                            <div class="card-body">
+                                <h3 class="card-title"><%= cls.name %></h3>
+                                <div class="class-info mb-3">
+                                    <p class="mb-2">
+                                        <i class="bi bi-person-fill text-warning"></i>
+                                        <strong>Trainer:</strong> 
+                                        <%= cls.trainer_nome %> <%= cls.trainer_cognome %>
+                                    </p>
+                                    <p class="mb-2">
+                                        <i class="bi bi-calendar text-warning"></i>
+                                        <strong>Day:</strong> <%= cls.day_of_week %>
+                                    </p>
+                                    <p class="mb-2">
+                                        <i class="bi bi-clock text-warning"></i>
+                                        <strong>Time:</strong> <%= cls.time %>
+                                    </p>
+                                    <p class="mb-2">
+                                        <i class="bi bi-people text-warning"></i>
+                                        <strong>Capacity:</strong> <%= cls.capacity %> people
+                                    </p>
+                                </div>
+                                <% if (cls.description) { %>
+                                    <p class="card-text"><%= cls.description %></p>
+                                <% } %>
+                                
+                                <% if (user && user.role === 'client') { %>
+                                    <button class="btn btn-warning w-100 book-class-btn" data-class-id="<%= cls.id %>">
+                                        <i class="bi bi-bookmark-plus"></i> BOOK THIS CLASS
+                                    </button>
+                                <% } else if (!user) { %>
+                                    <a href="/login" class="btn btn-outline-warning w-100">
+                                        <i class="bi bi-box-arrow-in-right"></i> LOGIN TO BOOK
+                                    </a>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <div class="col-12 text-center">
+                    <p class="lead">No classes available at the moment.</p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</section>
+
+ <% if (!user) { %>
+<%- include('partials/cta') %>
+<% } %>
+<%- include('partials/footer') %>

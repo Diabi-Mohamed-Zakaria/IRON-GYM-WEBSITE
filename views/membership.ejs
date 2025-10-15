@@ -1,0 +1,111 @@
+<%- include('partials/header') %>
+
+<section class="py-5">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2>Choose your <span class="gold-gradient">Membership</span></h2>
+      <div class="gold-line"></div>
+      <p class="text-secondary mt-2">Select a plan to unlock booking and perks.</p>
+      
+      <!-- Billing Period Toggle -->
+      <div class="billing-toggle mb-4">
+        <div class="btn-group" role="group">
+          <input type="radio" class="btn-check" name="billingPeriod" id="monthly" value="monthly" checked>
+          <label class="btn btn-outline-warning" for="monthly">Monthly</label>
+          
+          <input type="radio" class="btn-check" name="billingPeriod" id="annual" value="annual">
+          <label class="btn btn-outline-warning" for="annual">Annual <span class="badge bg-success">Save 20%</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <!-- Basic Plan -->
+      <div class="col-md-4">
+        <div class="card feature-card h-100">
+          <div class="card-body text-center">
+            <h3 class="text-warning">BASIC</h3>
+            <div class="price-display mb-3">
+              <span class="h2" id="basic-price">€29.99</span>
+              <span class="text-secondary" id="basic-period">/month</span>
+            </div>
+            <ul class="list-unstyled mb-4">
+              <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Gym Access</li>
+              <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Basic Equipment</li>
+              <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Locker Room</li>
+            </ul>
+            <div class="payment-options">
+              <button class="btn btn-outline-warning w-100 mb-2" data-plan="basic" data-method="cash">
+                <i class="bi bi-cash"></i> Pay in Gym
+              </button>
+              <button class="btn btn-warning w-100" data-plan="basic" data-method="card">
+                <i class="bi bi-credit-card"></i> Pay with Card
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Premium Plan -->
+      <div class="col-md-4">
+        <div class="card feature-card h-100 border-warning">
+          <div class="card-body text-center">
+            <div class="badge bg-warning text-dark mb-2">MOST POPULAR</div>
+            <h3 class="text-warning">PREMIUM</h3>
+            <div class="price-display mb-3">
+              <span class="h2" id="premium-price">€49.99</span>
+              <span class="text-secondary" id="premium-period">/month</span>
+            </div>
+            <ul class="list-unstyled mb-4">
+              <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Gym Access</li>
+              <li class="mb-2"><i class="bi bi-check-circle text-success"></i> All Equipment</li>
+              <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Group Classes</li>
+              <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Locker Room</li>
+              <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Shower</li>
+            </ul>
+            <div class="payment-options">
+              <button class="btn btn-outline-warning w-100 mb-2" data-plan="premium" data-method="cash">
+                <i class="bi bi-cash"></i> Pay in Gym
+              </button>
+              <button class="btn btn-warning w-100" data-plan="premium" data-method="card">
+                <i class="bi bi-credit-card"></i> Pay with Card
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Elite Plan -->
+      <div class="col-md-4">
+        <div class="card feature-card h-100">
+          <div class="card-body text-center">
+            <h3 class="text-warning">ELITE</h3>
+            <div class="price-display mb-3">
+              <span class="h2" id="elite-price">€79.99</span>
+              <span class="text-secondary" id="elite-period">/month</span>
+            </div>
+            <ul class="list-unstyled mb-4">
+              <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Gym Access</li>
+              <li class="mb-2"><i class="bi bi-check-circle text-success"></i> All Equipment</li>
+              <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Unlimited Classes</li>
+              <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Personal Trainer Sessions</li>
+              <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Spa Access</li>
+              <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Nutrition Consultation</li>
+            </ul>
+            <div class="payment-options">
+              <button class="btn btn-outline-warning w-100 mb-2" data-plan="elite" data-method="cash">
+                <i class="bi bi-cash"></i> Pay in Gym
+              </button>
+              <button class="btn btn-warning w-100" data-plan="elite" data-method="card">
+                <i class="bi bi-credit-card"></i> Pay with Card
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<%- include('partials/footer') %>

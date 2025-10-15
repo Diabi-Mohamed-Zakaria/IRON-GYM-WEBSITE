@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%= code %> - Errore</title>
+    <link rel="stylesheet" href="/stylesheets/styles.css">
+    <style>
+      .error-page { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
+      .error-card { max-width: 640px; text-align: center; }
+      .error-code { font-size: 14px; letter-spacing: 0.12em; color: var(--muted); }
+      .error-title { font-size: clamp(28px, 4vw, 40px); margin: 8px 0 12px; }
+      .error-actions { display: flex; gap: 12px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
+    </style>
+  </head>
+  <body>
+    <div class="error-page">
+      <div class="card error-card shadow">
+        <div class="gold-line error-gold-line"></div>
+        <div class="error-code"><%= code %></div>
+        <h1 class="error-title gold-gradient"><%= message %></h1>
+        <p class="text-muted">Ci scusiamo per l'inconveniente. Riprova tra qualche istante o contatta il supporto se il problema persiste.</p>
+        <div class="error-actions">
+          <a class="btn" href="/">Torna alla Home</a>
+          <button class="btn gold" id="reload-page-btn">Ricarica</button>
+        </div>
+        <div class="error-spacer"></div>
+      </div>
+    </div>
+  </body>
+</html>

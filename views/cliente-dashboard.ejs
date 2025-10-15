@@ -1,0 +1,157 @@
+<%- include('partials/header') %>
+
+<section class="statistics-section py-5">
+    <div class="container">
+        <div class="stats-header text-center mb-5">
+            <h1>MEMBER <span class="gold-gradient">DASHBOARD</span></h1>
+            <p class="lead">Welcome back, <%= user.nome %> <%= user.cognome %></p>
+            <span class="badge bg-success text-dark">
+                <i class="bi bi-file-person-fill"></i> Member
+            </span>
+            <div class="gold-line center mt-3"></div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="kpi-grid row g-4 mb-5">
+            <div class="col-md-6 col-lg-3">
+                <div class="kpi-card card bg-dark text-light h-100">
+                    <div class="card-body">
+                        <h3>Classes This Month <i class="bi bi-calendar-check"></i></h3>
+                        <span class="display-5 fw-bold d-block mb-2"><%= stats.classesThisMonth %></span>
+                        <span class="badge bg-success">Active</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="kpi-card card bg-dark text-light h-100">
+                    <div class="card-body">
+                        <h3>Fitness Score <i class="bi bi-graph-up"></i></h3>
+                        <span class="display-5 fw-bold d-block mb-2"><%= stats.fitnessScore %>%</span>
+                        <span class="badge bg-warning text-dark">Excellent</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="kpi-card card bg-dark text-light h-100">
+                    <div class="card-body">
+                        <h3>Calories Burned <i class="bi bi-fire"></i></h3>
+                        <span class="display-5 fw-bold d-block mb-2"><%= stats.caloriesBurned %></span>
+                        <span class="badge bg-danger">This Month</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="kpi-card card bg-dark text-light h-100">
+                    <div class="card-body">
+                        <h3>Next Session <i class="bi bi-clock"></i></h3>
+                        <% if (stats.nextSession) { %>
+                            <span class="h5 fw-bold d-block mb-2"><%= stats.nextSession.class_name %></span>
+                            <span class="badge bg-info"><%= stats.nextSession.day_of_week %> <%= stats.nextSession.time %></span>
+                        <% } else { %>
+                            <span class="h5 fw-bold d-block mb-2">No upcoming</span>
+                            <span class="badge bg-secondary">Book a class</span>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="gold-line center mb-5"></div>
+
+        <!-- My Bookings Table -->
+        <div class="trainer-stats mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2>MY BOOKINGS</h2>
+                <button class="btn btn-warning" id="book-new-class-btn">
+                    <i class="bi bi-plus-circle"></i> Book New Class
+                </button>
+            </div>
+            <div class="table-container">
+                <table id="bookings-table" class="stats-table table table-dark table-striped">
+                    <thead>
+                        <tr>
+                            <th>CLASS NAME</th>
+                            <th>DAY</th>
+                            <th>TIME</th>
+                            <th>TRAINER</th>
+                            <th>BOOKED DATE</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (bookings && bookings.length > 0) { %>
+                            <% bookings.forEach(booking => { %>
+                                <tr>
+                                    <td><strong><%= booking.class_name %></strong></td>
+                                    <td><%= booking.day_of_week %></td>
+                                    <td><%= booking.time %></td>
+                                    <td><%= booking.trainer_nome %> <%= booking.trainer_cognome %></td>
+                                    <td><%= new Date(booking.booking_date).toLocaleDateString() %></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-danger cancel-booking-btn" data-booking-id="<%= booking.id %>" data-class-name="<%= booking.class_name %>">
+                                            <i class="bi bi-x-circle"></i> Cancel
+                                        </button>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="6" class="text-center">No bookings yet. <a href="/classes" class="text-warning">Book your first class!</a></td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="gold-line center mb-5"></div>
+
+        <!-- Available Classes Table -->
+        <div class="trainer-stats mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2>AVAILABLE CLASSES</h2>
+                <button class="btn btn-outline-warning" id="refresh-classes-btn">
+                    <i class="bi bi-arrow-clockwise"></i> Refresh
+                </button>
+            </div>
+            <div class="table-container">
+                <table id="available-classes-table" class="stats-table table table-dark table-striped">
+                    <thead>
+                        <tr>
+                            <th>CLASS NAME</th>
+                            <th>DAY</th>
+                            <th>TIME</th>
+                            <th>TRAINER</th>
+                            <th>CAPACITY</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="6" class="text-center">Loading available classes...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <!-- Member Actions -->
+        <div class="d-flex flex-wrap gap-3 justify-content-center">
+            <button class="btn btn-warning" id="browse-classes-btn">
+                <i class="bi bi-calendar-plus"></i> Browse Classes
+            </button>
+            <button class="btn btn-warning" id="view-trainers-btn">
+                <i class="bi bi-people"></i> View Trainers
+            </button>
+            <button class="btn btn-warning" id="view-membership-btn">
+                <i class="bi bi-file-text"></i> View Membership & Payments
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Include JS -->
+<script src="/javascripts/cliente-dashboerd.js"></script>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,11 @@
+<section class="cta-section">
+  <div class="container text-center">
+    <h2 class="text-light mb-4">READY TO START YOUR JOURNEY?</h2>
+    <p class="lead text-light mb-4">Get access to premium classes, expert trainers, and world-class facilities</p>
+    <% if (!user) { %>
+      <a href="/join" class="btn btn-warning btn-lg">BECOME A MEMBER</a>
+    <% } else { %>
+      <a href="/classes" class="btn btn-warning btn-lg">BROWSE CLASSES</a>
+    <% } %>
+  </div>
+</section>

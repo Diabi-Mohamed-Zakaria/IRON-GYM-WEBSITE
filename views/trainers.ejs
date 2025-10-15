@@ -1,0 +1,58 @@
+<%- include('partials/header') %>
+
+<section class="page-header">
+    <div class="container">
+        <h1>OUR <span class="gold-gradient">TRAINERS </span></h1>
+        <p class="lead">Meet our team of elite fitness professionals</p>
+        <div class="gold-line center"></div>
+    </div>
+</section>
+
+<section class="trainers-section py-5">
+    <div class="container">
+        <div class="row g-4">
+            <% if (trainers && trainers.length > 0) { %>
+                <% trainers.forEach(trainer => { %>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card bg-dark text-light h-100 trainer-card">
+                            <div class="card-body text-center">
+                                <div class="trainer-avatar mb-3">
+                                    <i class="bi bi-person-circle display-1 text-warning"></i>
+                                </div>
+                                <h3 class="card-title"><%= trainer.nome %> <%= trainer.cognome %></h3>
+                                <p class="text-warning mb-3">
+                                    <i class="bi bi-trophy-fill"></i> Certified Trainer <i class="bi bi-patch-check"></i>
+                                </p>
+                                <p class="card-text mb-3">
+                                    <i class="bi bi-envelope"></i> <%= trainer.email %>
+                                </p>
+                                <p class="card-text">
+                                    <i class="bi bi-person-badge"></i> Username: <%= trainer.username %>
+                                </p>
+                                
+                                <% if (user && user.role === 'client') { %>
+                                    <a href="/classes" class="btn btn-warning mt-3 w-100">
+                                        <i class="bi bi-calendar-check"></i> VIEW CLASSES
+                                    </a>
+                                <% } else if (!user) { %>
+                                    <a href="/join" class="btn btn-outline-warning mt-3 w-100">
+                                        <i class="bi bi-person-plus"></i> JOIN TO TRAIN
+                                    </a>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <div class="col-12 text-center">
+                    <p class="lead">No trainers available at the moment.</p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</section>
+
+<% if (!user) { %>
+<%- include('partials/cta') %>
+<% } %>
+<%- include('partials/footer') %>

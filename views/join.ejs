@@ -1,0 +1,132 @@
+<%- include('partials/header') %>
+
+<section class="auth-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card bg-dark text-light">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <h2>JOIN <span class="gold-gradient">IRON GYM</span></h2>
+                            <p class="text-secondary">Start your fitness journey today</p>
+                            <div class="gold-line center"></div>
+                        </div>
+
+                        <div id="errorMessage" class="alert alert-danger d-none" role="alert"></div>
+                        <div id="successMessage" class="alert alert-success d-none" role="alert"></div>
+
+                        <form id="registerForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="nome" class="form-label">
+                                        <i class="bi bi-person"></i> First Name
+                                    </label>
+                                    <input 
+                                        type="text" 
+                                        class="form-control" 
+                                        id="nome" 
+                                        name="nome"
+                                        required 
+                                    />
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="cognome" class="form-label">
+                                        <i class="bi bi-person"></i> Last Name
+                                    </label>
+                                    <input 
+                                        type="text" 
+                                        class="form-control" 
+                                        id="cognome" 
+                                        name="cognome"
+                                        required 
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="email" class="form-label">
+                                    <i class="bi bi-envelope"></i> Email
+                                </label>
+                                <input 
+                                    type="email" 
+                                    class="form-control" 
+                                    id="email" 
+                                    name="email"
+                                    required 
+                                />
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="username" class="form-label">
+                                    <i class="bi bi-person-badge"></i> Username
+                                </label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="username" 
+                                    name="username"
+                                    required 
+                                />
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password" class="form-label">
+                                    <i class="bi bi-lock"></i> Password
+                                </label>
+                                <input 
+                                    type="password" 
+                                    class="form-control" 
+                                    id="password" 
+                                    name="password"
+                                    required 
+                                    minlength="6"
+                                />
+                                <small class="text-secondary">Minimum 6 characters</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="confirmPassword" class="form-label">
+                                    <i class="bi bi-lock-fill"></i> Confirm Password
+                                </label>
+                                <input 
+                                    type="password" 
+                                    class="form-control" 
+                                    id="confirmPassword" 
+                                    name="confirmPassword"
+                                    required 
+                                />
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="role" class="form-label">
+                                    <i class="bi bi-person-gear"></i> Account Type
+                                </label>
+                                <select class="form-control" id="role" name="role" required>
+                                    <option value="">Select your account type</option>
+                                    <option value="client">Client - I want to train and book classes</option>
+                                    <option value="trainer">Trainer - I want to teach classes</option>
+                                </select>
+                                <small class="text-secondary">Choose your role in the gym</small>
+                            </div>
+
+                            <button type="submit" class="btn btn-warning w-100 mb-3">
+                                <i class="bi bi-person-plus"></i> CREATE ACCOUNT
+                            </button>
+                        </form>
+
+                        <div class="text-center">
+                            <p class="text-secondary mb-0">
+                                Already have an account? 
+                                <a href="/login" class="text-warning">Login</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<%- include('partials/footer') %>

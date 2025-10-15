@@ -1,0 +1,199 @@
+<%- include('partials/header') %>
+
+<section class="statistics-section py-5">
+    <div class="container">
+        <div class="stats-header text-center mb-5">
+            <h1>TRAINER <span class="gold-gradient">DASHBOARD</span></h1>
+            <p class="lead">Welcome back, <%= user.nome %> <%= user.cognome %></p>
+            <span class="badge bg-warning text-dark">
+                <i class="bi bi-file-person-fill"></i> Trainer
+            </span>
+            <div class="gold-line center mt-3"></div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="kpi-grid row g-4 mb-5">
+            <div class="col-md-6 col-lg-3">
+                <div class="kpi-card card bg-dark text-light h-100">
+                    <div class="card-body">
+                        <h3>Active Clients <i class="bi bi-person"></i></h3>
+                        <span class="display-5 fw-bold d-block mb-2"><%= stats.activeClients %></span>
+                        <span class="badge bg-success">Active</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="kpi-card card bg-dark text-light h-100">
+                    <div class="card-body">
+                        <h3>Today's Sessions <i class="bi bi-calendar-check"></i></h3>
+                        <span class="display-5 fw-bold d-block mb-2"><%= stats.todaySessions %></span>
+                        <span class="badge bg-warning text-dark"><%= stats.todaySessions %> classes</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="kpi-card card bg-dark text-light h-100">
+                    <div class="card-body">
+                        <h3>Client Satisfaction <i class="bi bi-hand-thumbs-up"></i></h3>
+                        <span class="display-5 fw-bold d-block mb-2"><%= stats.satisfaction %>%</span>
+                        <span class="badge bg-success">+2% from last month</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="kpi-card card bg-dark text-light h-100">
+                    <div class="card-body">
+                        <h3>Hours This Month <i class="bi bi-hourglass-split"></i></h3>
+                        <span class="display-5 fw-bold d-block mb-2"><%= stats.hoursThisMonth %></span>
+                        <span class="badge bg-info">Training hours</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="gold-line center mb-5"></div>
+
+        <!-- My Classes Table -->
+        <div class="trainer-stats mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2>MY CLASSES</h2>
+                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#createClassModal">
+                    <i class="bi bi-plus-circle"></i> Create New Class
+                </button>
+            </div>
+            <div class="table-container">
+                <table id="classes-table" class="stats-table table table-dark table-striped">
+                    <thead>
+                        <tr>
+                            <th>CLASS NAME</th>
+                            <th>DAY</th>
+                            <th>TIME</th>
+                            <th>CAPACITY</th>
+                            <th>BOOKINGS</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (classes && classes.length > 0) { %>
+                            <% classes.forEach(cls => { %>
+                                <tr>
+                                    <td><strong><%= cls.name %></strong></td>
+                                    <td><%= cls.day_of_week %></td>
+                                    <td><%= cls.time %></td>
+                                    <td><%= cls.capacity %> people</td>
+                                    <td>
+                                        <span class="badge bg-info" id="bookings-count-<%= cls.id %>">Loading...</span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary view-bookings-btn" data-class-id="<%= cls.id %>" data-class-name="<%= cls.name %>">
+                                            <i class="bi bi-eye"></i> View
+                                        </button>
+                                        <button class="btn btn-sm btn-danger delete-class-btn" data-class-id="<%= cls.id %>" data-class-name="<%= cls.name %>">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="6" class="text-center">No classes assigned yet. Create your first class!</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="gold-line center mb-5"></div>
+
+        <!-- Client Bookings Table -->
+        <div class="trainer-stats mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2>CLIENT BOOKINGS</h2>
+                <button class="btn btn-outline-warning refresh-bookings-btn">
+                    <i class="bi bi-arrow-clockwise"></i> Refresh
+                </button>
+            </div>
+            <div class="table-container">
+                <table id="bookings-table" class="stats-table table table-dark table-striped">
+                    <thead>
+                        <tr>
+                            <th>CLIENT NAME</th>
+                            <th>CLASS NAME</th>
+                            <th>DAY</th>
+                            <th>TIME</th>
+                            <th>BOOKED DATE</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="6" class="text-center">Loading bookings...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <!-- Trainer Actions -->
+        <div class="d-flex flex-wrap gap-3 justify-content-center">
+            <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#createClassModal">
+                <i class="bi bi-plus-circle"></i> Schedule New Session
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Modal Crea Classe -->
+<div class="modal fade" id="createClassModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-light">
+            <div class="modal-header">
+                <h5 class="modal-title">Create New Class</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="create-class-form">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Class Name *</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="day_of_week" class="form-label">Day *</label>
+                        <select class="form-select" id="day_of_week" name="day_of_week" required>
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                            <option value="Saturday">Saturday</option>
+                            <option value="Sunday">Sunday</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="time" class="form-label">Time *</label>
+                        <input type="time" class="form-control" id="time" name="time" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="capacity" class="form-label">Capacity *</label>
+                        <input type="number" class="form-control" id="capacity" name="capacity" min="1" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning">Create Class</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Include JS -->
+<script src="/javascripts/trainer-dashboerd.js"></script>
+
+<%- include('partials/footer') %>

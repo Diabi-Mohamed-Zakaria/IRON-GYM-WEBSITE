@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+    <meta name="description" content="Premium fitness experience at IRON GYM. Achieve your fitness goals with state-of-the-art equipment and expert trainers." />
+    <meta name="author" content="Diabi Mohamed Zakaria 20054154" />
+    <link rel="icon" href="/img/icon1.png" type="image/png" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/stylesheets/styles.css" />
+</head>
+<body>
+<div class="header-container">
+    <% if (!user) { %>
+    <div class="promo-banner">
+        <div class="promo-content">
+            <span>GET 50% OFF THE FIRST MONTH OF ANY MEMBERSHIP</span>
+        </div>
+    </div>
+    <% } %>
+    <header class="navbar">
+    
+    <div class="container">
+        <a href="/" class="logo">
+            <h1><span class="gold-gradient">IRON</span> GYM</h1>
+        </a>
+        <nav class="desktop-nav">
+            <a href="/">HOME</a>
+            <a href="/classes">CLASSES</a>
+            <a href="/trainers">TRAINERS</a>
+            
+            <% if (user) { %>
+                <a href="/dashboard">DASHBOARD</a>
+                <form action="/api/auth/logout" method="POST" class="logout-form">
+                    <button type="submit" class="btn btn-outline">
+                        LOGOUT <i class="bi bi-box-arrow-right"></i>
+                    </button>
+                </form>
+            <% } else { %>
+                <a href="/login" class="btn btn-outline">LOGIN</a>
+                <a href="/join" class="btn btn-primary">JOIN NOW</a>
+            <% } %>
+        </nav>
+    </div>
+    </header>
+</div>

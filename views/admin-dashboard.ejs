@@ -1,0 +1,230 @@
+<%- include('partials/header') %>
+
+<section class="statistics-section py-5">
+    <div class="container">
+        <div class="stats-header text-center mb-5">
+            <h1>ADMIN <span class="gold-gradient">DASHBOARD</span></h1>
+            <p class="lead">Welcome back, <%= user.nome %> <%= user.cognome %></p>
+            <div class="gold-line center"></div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="kpi-grid row g-4 mb-5">
+            <div class="col-md-6 col-lg-3">
+                <div class="kpi-card card bg-dark text-light h-100">
+                    <div class="card-body">
+                        <h3>Total Members <i class="bi bi-file-person-fill"></i></h3>
+                        <span class="display-5 fw-bold mb-2"><%= stats.totalMembers %></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="kpi-card card bg-dark text-light h-100">
+                    <div class="card-body">
+                        <h3>Classes Today <i class="bi bi-check2-circle"></i></h3>
+                        <span class="display-5 fw-bold mb-2"><%= stats.classesToday %></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="kpi-card card bg-dark text-light h-100">
+                    <div class="card-body">
+                        <h3>Active Trainers <i class="bi bi-file-person-fill"></i></h3>
+                        <span class="display-5 fw-bold mb-2"><%= stats.activeTrainers %></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="kpi-card card bg-dark text-light h-100">
+                    <div class="card-body">
+                        <h3>Revenue (Month) <i class="bi bi-cash-coin"></i></h3>
+                        <span id="revenue-amount" class="display-5 fw-bold mb-2"><%= stats.revenue %> €</span>
+                        <span id="revenue-growth" class="badge bg-secondary">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="gold-line center mb-5"></div>
+
+        <!-- Admin Actions -->
+        <div class="d-flex flex-wrap gap-3 justify-content-center mb-5">
+            <button class="btn btn-warning" id="admin-browse-classes-btn">
+                <i class="bi bi-calendar-plus"></i> Manage Classes
+            </button>
+            <button class="btn btn-warning" id="admin-view-trainers-btn">
+                <i class="bi bi-people"></i> View Trainers
+            </button>
+        </div>
+
+        <div class="gold-line center mb-5"></div>
+
+        <!-- Members Payment Status Table -->
+        <div class="trainer-stats mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2>MEMBERS PAYMENT STATUS</h2>
+                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#createUserModal">
+                    <i class="bi bi-person-add"></i> Add New User
+                </button>
+            </div>
+            <div class="table-container">
+                <table id="members-table" class="stats-table table table-dark table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>NAME</th>
+                            <th>EMAIL</th>
+                            <th>MEMBERSHIP</th>
+                            <th>PAYMENT STATUS</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="6" class="text-center">Loading members...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="gold-line center mb-5"></div>
+
+        <!-- Classes Table -->
+        <div class="trainer-stats mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2>ALL CLASSES</h2>
+                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#createClassModal">
+                    <i class="bi bi-plus-circle"></i> Create New Class
+                </button>
+            </div>
+            <div class="table-container">
+                <table id="classes-table" class="stats-table table table-dark table-striped">
+                    <thead>
+                        <tr>
+                            <th>CLASS NAME</th>
+                            <th>DAY</th>
+                            <th>TIME</th>
+                            <th>TRAINER</th>
+                            <th>CAPACITY</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="6" class="text-center">Loading classes...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal Crea Classe -->
+<div class="modal fade" id="createClassModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-light">
+            <div class="modal-header">
+                <h5 class="modal-title">Create New Class</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="create-class-form">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Class Name *</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="trainer_id" class="form-label">Trainer *</label>
+                        <select class="form-select" id="trainer_id" name="trainer_id" required>
+                            <option value="">Select trainer...</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="day_of_week" class="form-label">Day *</label>
+                        <select class="form-select" id="day_of_week" name="day_of_week" required>
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                            <option value="Saturday">Saturday</option>
+                            <option value="Sunday">Sunday</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="time" class="form-label">Time *</label>
+                        <input type="time" class="form-control" id="time" name="time" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="capacity" class="form-label">Capacity *</label>
+                        <input type="number" class="form-control" id="capacity" name="capacity" min="1" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning">Create Class</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Crea Utente -->
+<div class="modal fade" id="createUserModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-light">
+            <div class="modal-header">
+                <h5 class="modal-title">Create New User</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="create-user-form">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username *</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password *</label>
+                        <input type="password" class="form-control" id="password" name="password" minlength="6" required>
+                        <small class="text-muted">Minimo 6 caratteri</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nome" class="form-label">Nome *</label>
+                        <input type="text" class="form-control" id="nome" name="nome" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cognome" class="form-label">Cognome *</label>
+                        <input type="text" class="form-control" id="cognome" name="cognome" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email *</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="role" class="form-label">Role *</label>
+                        <select class="form-select" id="role" name="role" required>
+                            <option value="client">Client</option>
+                            <option value="trainer">Trainer</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning">Create User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Include JS -->
+<script src="/javascripts/admin-dashboerd.js"></script>
+
+<%- include('partials/footer') %>
