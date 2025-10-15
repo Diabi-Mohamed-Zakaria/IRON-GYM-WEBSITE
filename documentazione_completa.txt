@@ -1,0 +1,703 @@
+================================================================================
+                    DOCUMENTAZIONE COMPLETA - IRON GYM WEB APPLICATION
+================================================================================
+
+AUTORE: Diabi Mohamed Zakaria 20054154
+VERSIONE: 1.0.0
+DESCRIZIONE: Applicazione web per gestione palestra IRON GYM
+
+================================================================================
+                                STRUTTURA PROGETTO
+================================================================================
+
+📁 GYM_WEB/
+├── 📄 server.js                    # Server principale Express.js
+├── 📄 package.json                 # Dipendenze e configurazione progetto
+├── 📄 package-lock.json           # Lock file dipendenze
+├── 📄 README.md                   # Documentazione progetto
+├── 📁 db/                         # Database e inizializzazione
+│   ├── 📄 gym.db                  # Database SQLite
+│   ├── 📄 gym.sql                 # Schema database
+│   └── 📄 init-db.js              # Script inizializzazione database
+├── 📁 models/                     # Data Access Objects (DAO)
+│   ├── 📄 user-dao.js             # Gestione utenti
+│   ├── 📄 class-dao.js            # Gestione classi
+│   ├── 📄 booking-dao.js          # Gestione prenotazioni
+│   ├── 📄 membership-dao.js       # Gestione membership
+│   └── 📄 review-dao.js           # Gestione recensioni
+├── 📁 routes/                     # Route e controller
+│   ├── 📄 auth.js                 # Autenticazione e autorizzazione
+│   ├── 📄 pages.js                # Route pagine EJS
+│   └── 📁 API/                    # API REST endpoints
+│       ├── 📄 users.js            # API gestione utenti
+│       ├── 📄 classes.js          # API gestione classi
+│       ├── 📄 bookining.js        # API gestione prenotazioni
+│       ├── 📄 memberships.js      # API gestione membership
+│       ├── 📄 payments.js         # API gestione pagamenti
+│       └── 📄 reviews.js          # API gestione recensioni
+├── 📁 views/                      # Template EJS
+│   ├── 📄 index.ejs               # Homepage
+│   ├── 📄 login.ejs               # Pagina login
+│   ├── 📄 join.ejs                # Pagina registrazione
+│   ├── 📄 classes.ejs             # Pagina classi
+│   ├── 📄 trainers.ejs            # Pagina trainers
+│   ├── 📄 membership.ejs          # Pagina membership
+│   ├── 📄 payment-status.ejs      # Status pagamenti
+│   ├── 📄 admin-dashboard.ejs     # Dashboard amministratore
+│   ├── 📄 trainer-dashboard.ejs   # Dashboard trainer
+│   ├── 📄 cliente-dashboard.ejs   # Dashboard cliente
+│   ├── 📄 errore.ejs              # Pagina errore
+│   └── 📁 partials/               # Componenti parziali
+├── 📁 public/                     # File statici
+│   ├── 📁 images/                 # Immagini
+│   ├── 📁 stylesheets/            # CSS
+│   └── 📁 javascripts/            # JavaScript client-side
+│       ├── 📄 app.js              # JavaScript principale
+│       ├── 📄 admin-dashboerd.js  # Dashboard admin
+│       ├── 📄 cliente-dashboerd.js # Dashboard cliente
+│       └── 📄 trainer-dashboerd.js # Dashboard trainer
+└── 📁 node_modules/               # Dipendenze Node.js
+
+================================================================================
+                                TECNOLOGIE UTILIZZATE
+================================================================================
+
+🔧 BACKEND:
+- Node.js (Runtime JavaScript)
+- Express.js (Framework web)
+- SQLite3 (Database)
+- Passport.js (Autenticazione)
+- Express-session (Gestione sessioni)
+- Crypto (Hashing password)
+- Morgan (Logging HTTP)
+
+🎨 FRONTEND:
+- EJS (Template engine)
+- Bootstrap 5.3.5 (Framework CSS)
+- Bootstrap Icons 1.13.1 (Icone)
+- JavaScript ES6+ (Client-side)
+
+🔐 SICUREZZA:
+- Passport Local Strategy
+- Password hashing con crypto.scrypt
+- Session-based authentication
+- Role-based access control
+- Input validation
+
+================================================================================
+                                PACKAGE.JSON
+================================================================================
+
+📦 DIPENDENZE PRINCIPALI:
+- express: ^4.18.2          # Framework web
+- sqlite3: ^5.1.7           # Database SQLite
+- passport: ^0.7.0          # Autenticazione
+- passport-local: ^1.0.0    # Strategia autenticazione locale
+- express-session: ^1.17.3  # Gestione sessioni
+- ejs: ^3.1.10              # Template engine
+- bootstrap: ^5.3.5         # Framework CSS
+- bootstrap-icons: ^1.13.1  # Icone
+- express-validator: ^7.2.1 # Validazione input
+- connect-flash: ^0.1.1     # Messaggi flash
+- cookie-parser: ^1.4.6     # Parser cookie
+- http-errors: ^2.0.0       # Gestione errori HTTP
+- morgan: ^1.10.0           # Logging HTTP
+
+📦 DIPENDENZE SVILUPPO:
+- nodemon: ^3.1.10          # Auto-restart server
+
+🚀 SCRIPT:
+- start: "node server.js"   # Avvio produzione
+- dev: "nodemon server.js"  # Avvio sviluppo
+
+================================================================================
+                                SERVER.JS
+================================================================================
+
+📄 DESCRIZIONE: File principale del server Express.js
+
+🔧 CONFIGURAZIONE MIDDLEWARE:
+- express.json(): Parser JSON
+- express.urlencoded(): Parser form data
+- express.static(): File statici da /public
+- express-session(): Configurazione sessioni
+- passport.initialize(): Inizializzazione Passport
+- passport.session(): Sessioni Passport
+
+🌐 ROUTE CONFIGURATE:
+- /api/auth/*              # Autenticazione
+- /api/users/*             # Gestione utenti
+- /api/classes/*           # Gestione classi
+- /api/bookings/*          # Gestione prenotazioni
+- /api/memberships/*       # Gestione membership
+- /api/payments/*          # Gestione pagamenti
+- /api/reviews/*           # Gestione recensioni
+- /*                       # Pagine EJS
+
+⚙️ CONFIGURAZIONE:
+- Porta: 3000
+- Template Engine: EJS
+- Views Directory: ./views
+- Static Files: ./public
+
+================================================================================
+                                MODELLI DATABASE (DAO)
+================================================================================
+
+📊 TABELLE DATABASE:
+1. users (Utenti)
+2. classes (Classi)
+3. bookings (Prenotazioni)
+4. reviews (Recensioni)
+5. memberships (Membership)
+6. payments (Pagamenti)
+
+🔧 USER-DAO.JS:
+Classe per gestione operazioni database utenti
+
+📋 METODI PRINCIPALI:
+- getUserByUsername(username): Recupera utente per username
+- getUserById(id): Recupera utente per ID
+- getUser(username): Recupera credenziali per Passport
+- createUser(): Crea nuovo utente con hash password
+- getAllUsers(): Recupera tutti gli utenti
+- getUsersByRole(role): Recupera utenti per ruolo
+- searchUsers(query): Cerca utenti
+- deleteUser(id): Elimina utente
+
+🔧 CLASS-DAO.JS:
+Classe per gestione operazioni database classi
+
+📋 METODI PRINCIPALI:
+- getAllClasses(): Recupera tutte le classi
+- getClassById(id): Recupera classe per ID
+- searchClasses(query): Cerca classi
+- getClassesByTrainer(trainerId): Classi di un trainer
+- createClass(classData): Crea nuova classe
+- updateClass(id, classData): Aggiorna classe
+- deleteClass(id): Elimina classe
+- getClassAvailability(classId): Disponibilità posti
+
+🔧 BOOKING-DAO.JS:
+Classe per gestione operazioni database prenotazioni
+
+📋 METODI PRINCIPALI:
+- createBooking(userId, classId): Crea prenotazione
+- getBookingsByUser(userId): Prenotazioni utente
+- getBookingsByClass(classId): Prenotazioni classe
+- deleteBooking(bookingId, userId): Cancella prenotazione
+- hasUserBookedClass(userId, classId): Verifica prenotazione
+- getAllBookings(): Tutte le prenotazioni
+- countUserBookings(userId): Conta prenotazioni utente
+
+🔧 MEMBERSHIP-DAO.JS:
+Classe per gestione operazioni database membership
+
+📋 METODI PRINCIPALI:
+- getMembershipByUser(userId): Membership utente
+- getMembershipPlans(): Piani disponibili
+- createMembership(): Crea membership
+- createPayment(): Crea pagamento
+- upsertMembership(): Crea/aggiorna membership
+- getPaymentsByUser(userId): Pagamenti utente
+- updatePaymentStatus(): Aggiorna stato pagamento
+- getMonthlyRevenue(): Revenue mensile
+
+🔧 REVIEW-DAO.JS:
+Classe per gestione operazioni database recensioni
+
+📋 METODI PRINCIPALI:
+- createReview(reviewData): Crea recensione
+- getAllReviews(): Tutte le recensioni
+- getReviewsByType(type): Recensioni per tipo
+- getReviewsByTrainer(trainerId): Recensioni trainer
+- getAverageRatingByTrainer(): Rating medio trainer
+- getAverageGymRating(): Rating medio palestra
+- hasUserReviewedTrainer(): Verifica recensione esistente
+- deleteReview(): Elimina recensione
+
+================================================================================
+                                ROUTE E CONTROLLER
+================================================================================
+
+🔐 AUTH.JS:
+Gestione autenticazione e autorizzazione
+
+📋 FUNZIONI MIDDLEWARE:
+- ensureAuthenticated: Verifica autenticazione
+- ensureAdmin: Verifica ruolo admin
+- ensureTrainer: Verifica ruolo trainer
+- ensureClient: Verifica ruolo client
+
+📋 ROUTE AUTENTICAZIONE:
+- GET /api/auth/session: Sessione corrente
+- POST /api/auth/login: Login utente
+- POST /api/auth/logout: Logout utente
+- POST /api/auth/register: Registrazione utente
+
+🔧 PAGES.JS:
+Route per pagine EJS (server-side rendering)
+
+📋 ROUTE PUBBLICHE:
+- GET /: Homepage
+- GET /classes: Pagina classi
+- GET /trainers: Pagina trainers
+- GET /login: Pagina login
+- GET /join: Pagina registrazione
+
+📋 ROUTE PROTETTE:
+- GET /dashboard: Redirect dashboard appropriata
+- GET /membership: Scelta piano
+- GET /payment-status: Status pagamenti
+- GET /admin/dashboard: Dashboard admin
+- GET /trainer/dashboard: Dashboard trainer
+- GET /client/dashboard: Dashboard cliente
+- GET /bookings: Prenotazioni utente
+
+================================================================================
+                                API REST ENDPOINTS
+================================================================================
+
+👥 API USERS (/api/users):
+- GET /: Tutti gli utenti (admin)
+- GET /role/:role: Utenti per ruolo (admin)
+- GET /trainers: Tutti i trainers (pubblico)
+- GET /:id: Dettaglio utente (admin)
+- POST /: Crea utente (admin)
+- GET /search: Cerca utenti (admin)
+- DELETE /:id: Elimina utente (admin)
+
+📅 API CLASSES (/api/classes):
+- GET /: Elenco classi (pubblico)
+- GET /trainer: Classi trainer corrente
+- GET /:id: Dettaglio classe
+- GET /search: Cerca classi
+- GET /:id/availability: Disponibilità posti
+- POST /: Crea classe (admin/trainer)
+- PUT /:id: Aggiorna classe (admin/trainer)
+- DELETE /:id: Elimina classe (admin)
+
+🎫 API BOOKINGS (/api/bookings):
+- POST /: Crea prenotazione (autenticato)
+- GET /me: Mie prenotazioni
+- GET /class/:classId: Prenotazioni classe (admin)
+- GET /trainer/class/:classId: Prenotazioni classe trainer
+- DELETE /:bookingId: Cancella prenotazione
+
+💳 API MEMBERSHIPS (/api/memberships):
+- GET /me: Membership corrente
+- GET /plans: Piani disponibili
+- GET /user/:userId: Membership utente
+- POST /: Crea/aggiorna membership
+
+💰 API PAYMENTS (/api/payments):
+- GET /user/:userId: Pagamenti utente
+- GET /my: Miei pagamenti
+- PUT /:paymentId/status: Aggiorna stato (admin)
+- GET /revenue/:year/:month: Revenue mensile (admin)
+- GET /revenue: Revenue mese corrente (admin)
+- POST /: Crea pagamento (admin)
+
+⭐ API REVIEWS (/api/reviews):
+- GET /: Tutte le recensioni
+- GET /gym: Recensioni palestra
+- GET /trainer/:id: Recensioni trainer
+- GET /stats/gym: Statistiche rating palestra
+- GET /stats/trainer/:id: Statistiche rating trainer
+- POST /: Crea recensione
+- DELETE /:id: Elimina recensione
+
+================================================================================
+                                JAVASCRIPT CLIENT-SIDE
+================================================================================
+
+📄 APP.JS:
+JavaScript principale per funzionalità comuni
+
+🔧 CLASSI PRINCIPALI:
+- ApiManager: Gestione chiamate API
+- Validator: Validazione form
+- MembershipPlans: Configurazione piani
+
+📋 FUNZIONI PRINCIPALI:
+- showToast(): Notifiche toast
+- apiFetch(): Wrapper fetch API
+- doLogout(): Logout utente
+- validateForm(): Validazione form
+- scrollToNext(): Scroll homepage
+- loadTrainers(): Carica trainers
+- setupReviewForm(): Setup form recensioni
+- searchClasses(): Ricerca classi
+- bookClass(): Prenotazione classe
+- handleRegistration(): Gestione registrazione
+- handleLogin(): Gestione login
+- selectPlan(): Selezione piano membership
+- processCardPayment(): Simulazione pagamento carta
+- loadPaymentStatusData(): Carica dati pagamenti
+
+📄 ADMIN-DASHBOERD.JS:
+JavaScript per dashboard amministratore
+
+🔧 CLASSI PRINCIPALI:
+- ClassManager: Gestione classi
+- UserManager: Gestione utenti
+- DashboardStats: Statistiche dashboard
+
+📋 FUNZIONI PRINCIPALI:
+- loadClasses(): Carica classi
+- renderClassesTable(): Render tabella classi
+- deleteClass(): Elimina classe
+- createClass(): Crea classe
+- loadUsers(): Carica utenti
+- renderUsersTable(): Render tabella utenti
+- markAsPaid(): Segna come pagato
+- markAsNotPaid(): Segna come non pagato
+- deleteUser(): Elimina utente
+- createUser(): Crea utente
+- loadRevenueStats(): Carica statistiche revenue
+
+📄 CLIENTE-DASHBOERD.JS:
+JavaScript per dashboard cliente
+
+🔧 CLASSI PRINCIPALI:
+- ClientManager: Gestione cliente
+
+📋 FUNZIONI PRINCIPALI:
+- loadBookings(): Carica prenotazioni
+- renderBookingsTable(): Render tabella prenotazioni
+- cancelBooking(): Cancella prenotazione
+- loadAvailableClasses(): Carica classi disponibili
+- renderAvailableClassesTable(): Render tabella classi
+- bookClass(): Prenota classe
+
+📄 TRAINER-DASHBOERD.JS:
+JavaScript per dashboard trainer
+
+🔧 CLASSI PRINCIPALI:
+- TrainerManager: Gestione trainer
+
+📋 FUNZIONI PRINCIPALI:
+- loadClasses(): Carica classi trainer
+- renderClassesTable(): Render tabella classi
+- loadBookingCount(): Carica conteggio prenotazioni
+- deleteClass(): Elimina classe
+- loadAllBookings(): Carica tutte le prenotazioni
+- renderBookingsTable(): Render tabella prenotazioni
+- createClass(): Crea classe
+
+================================================================================
+                                SISTEMA DI AUTENTICAZIONE
+================================================================================
+
+🔐 STRATEGIA AUTENTICAZIONE:
+- Passport Local Strategy
+- Password hashing con crypto.scrypt
+- Salt random per ogni password
+- Session-based authentication
+
+👥 RUOLI UTENTE:
+- admin: Amministratore completo
+- trainer: Trainer palestra
+- client: Cliente/membro
+
+🔒 MIDDLEWARE AUTORIZZAZIONE:
+- ensureAuthenticated: Utente loggato
+- ensureAdmin: Solo admin
+- ensureTrainer: Trainer o admin
+- ensureClient: Solo clienti
+
+📋 FLUSSO AUTENTICAZIONE:
+1. Registrazione: Crea utente con password hashata
+2. Login: Verifica credenziali con Passport
+3. Sessione: Salva ID utente in sessione
+4. Autorizzazione: Verifica ruolo per accesso risorse
+
+================================================================================
+                                SISTEMA MEMBERSHIP
+================================================================================
+
+💳 PIANI DISPONIBILI:
+- BASIC: €29.99/mese, €299.99/anno
+- PREMIUM: €49.99/mese, €499.99/anno
+- ELITE: €79.99/mese, €799.99/anno
+
+🎯 FEATURE PIANI:
+- BASIC: Accesso palestra, attrezzature base, spogliatoi
+- PREMIUM: Accesso completo, classi di gruppo, docce
+- ELITE: Accesso illimitato, personal trainer, spa, consulenza nutrizionale
+
+💳 METODI PAGAMENTO:
+- cash: Pagamento in palestra
+- card: Pagamento con carta
+- bank_transfer: Bonifico bancario
+
+📊 STATI PAGAMENTO:
+- pending: In attesa
+- completed: Completato
+- failed: Fallito
+- refunded: Rimborsato
+
+================================================================================
+                                SISTEMA PRENOTAZIONI
+================================================================================
+
+📅 GESTIONE CLASSI:
+- Creazione classi da admin/trainer
+- Assegnazione trainer
+- Capacità massima
+- Giorni e orari
+- Descrizioni
+
+🎫 SISTEMA PRENOTAZIONI:
+- Prenotazione classe da clienti
+- Controllo disponibilità posti
+- Prevenzione doppie prenotazioni
+- Cancellazione prenotazioni
+- Visualizzazione prenotazioni per trainer
+
+📊 DISPONIBILITÀ:
+- Controllo posti disponibili
+- Capacità massima per classe
+- Conteggio prenotazioni attive
+- Gestione overflow
+
+================================================================================
+                                SISTEMA RECENSIONI
+================================================================================
+
+⭐ TIPI RECENSIONI:
+- gym: Recensioni sulla palestra
+- trainer: Recensioni sui trainer
+
+📊 SISTEMA RATING:
+- Scala 1-5 stelle
+- Rating medio per trainer
+- Rating medio palestra
+- Conteggio recensioni totali
+
+🔒 CONTROLLI:
+- Una recensione per trainer per utente
+- Validazione input
+- Eliminazione solo proprie recensioni (o admin)
+
+================================================================================
+                                DATABASE SCHEMA
+================================================================================
+
+📊 TABELLA USERS:
+- id (INTEGER PRIMARY KEY)
+- username (TEXT UNIQUE)
+- hash (TEXT) - Password hashata
+- salt (TEXT) - Salt per password
+- role (TEXT) - admin/trainer/client
+- nome (TEXT)
+- cognome (TEXT)
+- email (TEXT UNIQUE)
+- gender (TEXT) - male/female
+- created_at (DATETIME)
+
+📊 TABELLA CLASSES:
+- id (INTEGER PRIMARY KEY)
+- name (TEXT)
+- trainer_id (INTEGER) - FK users
+- time (TEXT)
+- capacity (INTEGER)
+- day_of_week (TEXT)
+- description (TEXT)
+- created_at (DATETIME)
+
+📊 TABELLA BOOKINGS:
+- id (INTEGER PRIMARY KEY)
+- user_id (INTEGER) - FK users
+- class_id (INTEGER) - FK classes
+- booking_date (DATETIME)
+- UNIQUE(user_id, class_id)
+
+📊 TABELLA REVIEWS:
+- id (INTEGER PRIMARY KEY)
+- user_id (INTEGER) - FK users
+- trainer_id (INTEGER) - FK users (nullable)
+- rating (INTEGER) - 1-5
+- title (TEXT)
+- comment (TEXT)
+- review_type (TEXT) - gym/trainer
+- created_at (DATETIME)
+
+📊 TABELLA MEMBERSHIPS:
+- id (INTEGER PRIMARY KEY)
+- user_id (INTEGER UNIQUE) - FK users
+- plan_type (TEXT) - basic/premium/elite
+- billing_period (TEXT) - monthly/annual
+- price (DECIMAL)
+- status (TEXT) - active/expired/cancelled
+- start_date (DATE)
+- end_date (DATE)
+- created_at (DATETIME)
+
+📊 TABELLA PAYMENTS:
+- id (INTEGER PRIMARY KEY)
+- user_id (INTEGER) - FK users
+- membership_id (INTEGER) - FK memberships
+- amount (DECIMAL)
+- payment_method (TEXT) - cash/card/bank_transfer
+- payment_status (TEXT) - pending/completed/failed/refunded
+- payment_date (DATETIME)
+- due_date (DATE)
+- notes (TEXT)
+
+================================================================================
+                                SICUREZZA E VALIDAZIONE
+================================================================================
+
+🔐 SICUREZZA PASSWORD:
+- Hashing con crypto.scrypt
+- Salt random per ogni password
+- Timing-safe comparison
+- Lunghezza minima 6 caratteri
+
+🛡️ VALIDAZIONE INPUT:
+- Express-validator per API
+- Validazione lato client
+- Sanitizzazione input
+- Controllo tipi dati
+
+🔒 AUTORIZZAZIONE:
+- Role-based access control
+- Middleware di verifica
+- Controllo proprietà risorse
+- Session timeout
+
+🚫 PROTEZIONI:
+- SQL injection prevention
+- XSS protection
+- CSRF protection (session-based)
+- Input sanitization
+
+================================================================================
+                                FUNZIONALITÀ AVANZATE
+================================================================================
+
+📊 DASHBOARD ADMIN:
+- Gestione utenti completa
+- Gestione classi
+- Statistiche revenue
+- Controllo pagamenti
+- Eliminazione risorse
+
+👨‍🏫 DASHBOARD TRAINER:
+- Gestione proprie classi
+- Visualizzazione prenotazioni
+- Conteggio partecipanti
+- Creazione nuove classi
+
+👤 DASHBOARD CLIENTE:
+- Prenotazione classi
+- Gestione prenotazioni
+- Visualizzazione classi disponibili
+- Status membership
+
+💳 SISTEMA PAGAMENTI:
+- Simulazione pagamento carta
+- Gestione stati pagamento
+- Revenue tracking
+- Cronologia pagamenti
+
+⭐ SISTEMA RECENSIONI:
+- Rating sistema
+- Recensioni palestra/trainer
+- Statistiche rating
+- Moderazione contenuti
+
+================================================================================
+                                CONFIGURAZIONE E DEPLOYMENT
+================================================================================
+
+🚀 AVVIO APPLICAZIONE:
+```bash
+# Sviluppo
+npm run dev
+
+# Produzione
+npm start
+```
+
+⚙️ CONFIGURAZIONE:
+- Porta: 3000
+- Database: SQLite (gym.db)
+- Session secret: 'iron-gym-secret-key-2025'
+- Session timeout: 24 ore
+
+🔧 INIZIALIZZAZIONE DATABASE:
+```bash
+node db/init-db.js
+```
+
+📝 CREDENZIALI TEST:
+- Admin: admin / password123
+- Trainer: john.trainer / password123
+- Client: luca.bianchi / password123
+
+================================================================================
+                                ARCHITETTURA E PATTERN
+================================================================================
+
+🏗️ PATTERN ARCHITETTURALI:
+- MVC (Model-View-Controller)
+- DAO Pattern (Data Access Object)
+- Middleware Pattern
+- REST API Design
+
+📁 ORGANIZZAZIONE CODICE:
+- Separazione concerns
+- Moduli riutilizzabili
+- Configurazione centralizzata
+- Error handling centralizzato
+
+🔄 FLUSSO DATI:
+1. Client → API Endpoint
+2. Middleware → Validazione/Autorizzazione
+3. Controller → Business Logic
+4. DAO → Database Operations
+5. Response → JSON/HTML
+
+================================================================================
+                                CONCLUSIONI
+================================================================================
+
+✅ CARATTERISTICHE IMPLEMENTATE:
+- Sistema autenticazione completo
+- Gestione ruoli e autorizzazioni
+- CRUD completo per tutte le entità
+- Dashboard personalizzate per ruolo
+- Sistema membership e pagamenti
+- Sistema prenotazioni classi
+- Sistema recensioni e rating
+- API REST complete
+- Interfaccia utente responsive
+- Database relazionale SQLite
+
+🎯 FUNZIONALITÀ CHIAVE:
+- Registrazione e login utenti
+- Gestione classi e trainer
+- Prenotazione e cancellazione classi
+- Sistema membership con piani
+- Pagamenti e revenue tracking
+- Recensioni e rating sistema
+- Dashboard amministrative
+- Gestione utenti completa
+
+🔧 TECNOLOGIE MODERNE:
+- Node.js e Express.js
+- SQLite per database
+- EJS per templating
+- Bootstrap per UI
+- JavaScript ES6+
+- Passport per autenticazione
+- Session-based security
+
+Questa applicazione rappresenta un sistema completo per la gestione di una palestra,
+con tutte le funzionalità necessarie per amministratori, trainer e clienti.
+
+================================================================================
+                                FINE DOCUMENTAZIONE
+================================================================================
