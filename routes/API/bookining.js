@@ -1,8 +1,9 @@
 'use strict';
 
 const express = require('express');
-const { ensureAuthenticated, ensureAdmin } = require('../../routes/auth');
+const { ensureAuthenticated, ensureAdmin, ensureTrainer } = require('../../routes/auth');
 const BookingDAO = require('../../models/booking-dao');
+const ClassDAO = require('../../models/class-dao');
 
 const router = express.Router();
 
@@ -40,6 +41,31 @@ router.get('/class/:classId', ensureAuthenticated, ensureAdmin, async (req, res)
     const items = await bookingDAO.getBookingsByClass(classId);
     res.json(items);
   } catch (err) {
+    res.status(500).json({ error: 'Errore del server.' });
+  }
+});
+
+// GET /api/bookings/trainer/class/:classId - prenotazioni per classe del trainer (solo trainer per le proprie classi)
+router.get('/trainer/class/:classId', ensureAuthenticated, ensureTrainer, async (req, res) => {
+  try {
+    const classId = Number(req.params.classId);
+    console.log(`Loading bookings for class ${classId} by trainer ${req.user.id}`);
+    const classDAO = new ClassDAO();
+    const bookingDAO = new BookingDAO();
+    
+    // Verifica che la classe appartenga al trainer
+    const classData = await classDAO.getClassById(classId);
+    console.log(`Class data for ID ${classId}:`, classData);
+    if (!classData || classData.trainer_id !== req.user.id) {
+      console.log(`Access denied: class trainer_id ${classData?.trainer_id} !== user id ${req.user.id}`);
+      return res.status(403).json({ error: 'Accesso negato. Puoi vedere solo le prenotazioni delle tue classi.' });
+    }
+    
+    const items = await bookingDAO.getBookingsByClass(classId);
+    console.log(`Found ${items.length} bookings for class ${classId}:`, items);
+    res.json(items);
+  } catch (err) {
+    console.error('Error loading trainer class bookings:', err);
     res.status(500).json({ error: 'Errore del server.' });
   }
 });

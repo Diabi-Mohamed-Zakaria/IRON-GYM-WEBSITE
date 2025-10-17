@@ -70,7 +70,12 @@ app.use((req, res) => {
   if (req.path.startsWith('/api/')) {
     return res.status(404).json({ error: 'Risorsa non trovata.' });
   }
-  return res.status(404).render('errore', { code: 404, message: 'Pagina non trovata' });
+  return res.status(404).render('errore', { 
+    title: 'Pagina Non Trovata - IRON GYM',
+    code: 404, 
+    message: 'Pagina non trovata',
+    user: req.user || null
+  });
 });
 
 // Central Error handler
@@ -79,7 +84,12 @@ app.use((err, req, res, next) => {
   if (req.path.startsWith('/api/')) {
     return res.status(500).json({ error: 'Errore del server.' });
   }
-  return res.status(500).render('errore', { code: 500, message: 'Si è verificato un errore' });
+  return res.status(500).render('errore', { 
+    title: 'Errore del Server - IRON GYM',
+    code: 500, 
+    message: 'Si è verificato un errore',
+    user: req.user || null
+  });
 });
 
 // ==================== START SERVER ====================

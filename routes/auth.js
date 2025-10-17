@@ -3,7 +3,6 @@
 const express = require('express');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const crypto = require('crypto');
 const UserDAO = require('../models/user-dao');
 
 const router = express.Router();
@@ -21,17 +20,13 @@ passport.use(new LocalStrategy(
         return done(null, false, { message: 'Username o password errati.' });
       }
 
-      // Verifica password con crypto.scrypt
-      crypto.scrypt(password, user.salt, 32, (err, hashedPassword) => {
-        if (err) return done(err);
+      // Verifica password (confronto diretto per progetto scolastico)
+      if (password !== user.password) {
+        return done(null, false, { message: 'Username o password errati.' });
+      }
 
-        if (!crypto.timingSafeEqual(Buffer.from(user.hash, 'hex'), hashedPassword)) {
-          return done(null, false, { message: 'Username o password errati.' });
-        }
-
-        // Password corretta
-        return done(null, user.user);
-      });
+      // Password corretta
+      return done(null, user.user);
     } catch (err) {
       return done(err);
     }
@@ -63,8 +58,12 @@ function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   }
+  // Per le pagine EJS, reindirizza al login
+  if (req.accepts('html')) {
+    return res.redirect('/login');
+  }
+  // Per le API, restituisci JSON
   res.status(401).json({ error: 'Non autenticato.' });
-  // Oppure: res.redirect('/login');
 }
 
 /**
@@ -148,12 +147,12 @@ router.post('/logout', (req, res) => {
  */
 router.post('/register', async (req, res) => {
   try {
-    const { username, password, nome, cognome, email, role } = req.body;
+    const { username, password, nome, cognome, email, role, gender } = req.body;
 
-    console.log('Dati ricevuti per registrazione:', { username, nome, cognome, email, role });
+    console.log('Dati ricevuti per registrazione:', { username, nome, cognome, email, role, gender });
 
     // Validazione input
-    if (!username || !password || !nome || !cognome || !email) {
+    if (!username || !password || !nome || !cognome || !email || !gender) {
       console.error('Errore: campi mancanti');
       return res.status(400).json({ error: 'Tutti i campi sono obbligatori.' });
     }
@@ -175,8 +174,14 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ error: 'Ruolo non valido.' });
     }
 
+    // Valida gender
+    if (!['male', 'female'].includes(gender)) {
+      console.error('Errore: gender non valido');
+      return res.status(400).json({ error: 'Genere non valido.' });
+    }
+
     // Crea utente
-    const userId = await userDAO.createUser(username, password, userRole, nome, cognome, email);
+    const userId = await userDAO.createUser(username, password, userRole, nome, cognome, email, gender);
     console.log('Utente creato con ID:', userId);
 
     // Login automatico dopo registrazione

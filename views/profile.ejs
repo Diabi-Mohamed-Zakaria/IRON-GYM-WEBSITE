@@ -1,0 +1,198 @@
+<%- include('partials/header') %>
+
+<section class="profile-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card bg-dark text-light">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <h2>MY <span class="gold-gradient">PROFILE</span></h2>
+                            <p class="text-secondary">Manage your personal information</p>
+                            <div class="gold-line center"></div>
+                        </div>
+
+                        <div id="errorMessage" class="alert alert-danger d-none" role="alert"></div>
+                        <div id="successMessage" class="alert alert-success d-none" role="alert"></div>
+
+                        <form id="profileForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="nome" class="form-label">
+                                        <i class="bi bi-person"></i> First Name
+                                    </label>
+                                    <input 
+                                        type="text" 
+                                        class="form-control" 
+                                        id="nome" 
+                                        name="nome"
+                                        value="<%= user.nome %>"
+                                        required 
+                                    />
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="cognome" class="form-label">
+                                        <i class="bi bi-person"></i> Last Name
+                                    </label>
+                                    <input 
+                                        type="text" 
+                                        class="form-control" 
+                                        id="cognome" 
+                                        name="cognome"
+                                        value="<%= user.cognome %>"
+                                        required 
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="email" class="form-label">
+                                    <i class="bi bi-envelope"></i> Email
+                                </label>
+                                <input 
+                                    type="email" 
+                                    class="form-control" 
+                                    id="email" 
+                                    name="email"
+                                    value="<%= user.email %>"
+                                    required 
+                                />
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="username" class="form-label">
+                                    <i class="bi bi-person-badge"></i> Username
+                                </label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="username" 
+                                    name="username"
+                                    value="<%= user.username %>"
+                                    readonly
+                                />
+                                <small class="text-secondary">Username cannot be changed</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="role" class="form-label">
+                                    <i class="bi bi-person-gear"></i> Account Type
+                                </label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="role" 
+                                    name="role"
+                                    value="<%= user.role %>"
+                                    readonly
+                                />
+                                <small class="text-secondary">Account type cannot be changed</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="gender" class="form-label">
+                                    <i class="bi bi-gender-ambiguous"></i> Gender
+                                </label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="gender" 
+                                    name="gender"
+                                    value="<%= user.gender %>"
+                                    readonly
+                                />
+                                <small class="text-secondary">Gender cannot be changed</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="currentPassword" class="form-label">
+                                    <i class="bi bi-lock"></i> Current Password
+                                </label>
+                                <input 
+                                    type="password" 
+                                    class="form-control" 
+                                    id="currentPassword" 
+                                    name="currentPassword"
+                                    required 
+                                />
+                                <small class="text-secondary">Enter your current password to save changes</small>
+                            </div>
+
+                            <button type="submit" class="btn btn-warning w-100 mb-3">
+                                <i class="bi bi-check-circle"></i> UPDATE PROFILE
+                            </button>
+                        </form>
+
+                        <!-- Password Update Section -->
+                        <div class="mt-5 pt-4 border-top border-secondary">
+                            <h4 class="text-warning mb-4">
+                                <i class="bi bi-shield-lock"></i> Change Password
+                            </h4>
+                            
+                            <div id="passwordErrorMessage" class="alert alert-danger d-none" role="alert"></div>
+                            <div id="passwordSuccessMessage" class="alert alert-success d-none" role="alert"></div>
+
+                            <form id="passwordForm">
+                                <div class="mb-3">
+                                    <label for="currentPasswordForChange" class="form-label">
+                                        <i class="bi bi-lock"></i> Current Password
+                                    </label>
+                                    <input 
+                                        type="password" 
+                                        class="form-control" 
+                                        id="currentPasswordForChange" 
+                                        name="currentPasswordForChange"
+                                        required 
+                                    />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="newPassword" class="form-label">
+                                        <i class="bi bi-lock-fill"></i> New Password
+                                    </label>
+                                    <input 
+                                        type="password" 
+                                        class="form-control" 
+                                        id="newPassword" 
+                                        name="newPassword"
+                                        required 
+                                        minlength="6"
+                                    />
+                                    <small class="text-secondary">Minimum 6 characters</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="confirmNewPassword" class="form-label">
+                                        <i class="bi bi-lock-fill"></i> Confirm New Password
+                                    </label>
+                                    <input 
+                                        type="password" 
+                                        class="form-control" 
+                                        id="confirmNewPassword" 
+                                        name="confirmNewPassword"
+                                        required 
+                                    />
+                                </div>
+
+                                <button type="submit" class="btn btn-outline-warning w-100 mb-3">
+                                    <i class="bi bi-shield-check"></i> CHANGE PASSWORD
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="text-center">
+                            <p class="text-secondary mb-0">
+                                <a href="/dashboard" class="text-warning">
+                                    <i class="bi bi-arrow-left"></i> Back to Dashboard
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<%- include('partials/footer') %>

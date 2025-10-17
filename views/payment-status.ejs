@@ -30,6 +30,39 @@
                 <p class="mt-2 text-secondary">Loading membership information...</p>
               </div>
             </div>
+            
+            <!-- Membership Status Templates (hidden by default) -->
+            <div id="membership-status-no-active" class="d-none">
+              <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle"></i> No active membership found.
+                <a href="/membership" class="btn btn-warning btn-sm ms-2">Get Membership</a>
+              </div>
+            </div>
+            
+            <div id="membership-status-active" class="d-none">
+              <div class="row">
+                <div class="col-md-6">
+                  <h5 class="text-white" id="membership-plan-type"></h5>
+                  <p class="text-secondary mb-1">Billing: <span id="membership-billing-period"></span></p>
+                  <p class="text-secondary mb-1">Price: <span id="membership-price"></span></p>
+                  <p class="text-secondary mb-0">Start Date: <span id="membership-start-date"></span></p>
+                </div>
+                <div class="col-md-6">
+                  <div class="text-end">
+                    <span class="badge fs-6" id="membership-status-badge">
+                      <i class="bi bi-check-circle"></i> <span id="membership-status-text"></span>
+                    </span>
+                    <p class="text-secondary mt-2 mb-0">End Date: <span id="membership-end-date"></span></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div id="membership-status-error" class="d-none">
+              <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle"></i> Error loading membership information.
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -49,6 +82,52 @@
                   <span class="visually-hidden">Loading...</span>
                 </div>
                 <p class="mt-2 text-secondary">Loading payment history...</p>
+              </div>
+            </div>
+            
+            <!-- Payment History Templates (hidden by default) -->
+            <div id="payment-history-empty" class="d-none">
+              <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i> No payment history found.
+              </div>
+            </div>
+            
+            <div id="payment-history-list" class="d-none">
+              <!-- Payment items will be dynamically inserted here -->
+            </div>
+            
+            <!-- Payment Item Template -->
+            <div id="payment-item-template" class="d-none">
+              <div class="border-bottom py-3">
+                <div class="row align-items-center">
+                  <div class="col-md-3">
+                    <strong class="text-white payment-amount"></strong>
+                    <br>
+                    <small class="text-secondary payment-plan-info"></small>
+                  </div>
+                  <div class="col-md-3">
+                    <span class="badge payment-status-badge">
+                      <i class="payment-status-icon"></i> <span class="payment-status-text"></span>
+                    </span>
+                  </div>
+                  <div class="col-md-3">
+                    <small class="text-secondary">
+                      <i class="bi bi-calendar"></i> <span class="payment-date"></span>
+                    </small>
+                  </div>
+                  <div class="col-md-3">
+                    <small class="text-secondary">
+                      <i class="payment-method-icon"></i> <span class="payment-method-text"></span>
+                    </small>
+                  </div>
+                </div>
+                <small class="text-muted mt-1 d-block payment-notes"></small>
+              </div>
+            </div>
+            
+            <div id="payment-history-error" class="d-none">
+              <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle"></i> Error loading payment history.
               </div>
             </div>
           </div>

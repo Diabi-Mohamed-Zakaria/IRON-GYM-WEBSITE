@@ -6,7 +6,7 @@
     <title><%= title %></title>
     <meta name="description" content="Premium fitness experience at IRON GYM. Achieve your fitness goals with state-of-the-art equipment and expert trainers." />
     <meta name="author" content="Diabi Mohamed Zakaria 20054154" />
-    <link rel="icon" href="/img/icon1.png" type="image/png" />
+    <link rel="icon" href="/images/icon1.png" type="image/png" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
     <link rel="stylesheet" href="/stylesheets/styles.css" />
@@ -33,6 +33,7 @@
             
             <% if (user) { %>
                 <a href="/dashboard">DASHBOARD</a>
+                <a href="/profile">PROFILE</a>
                 <form action="/api/auth/logout" method="POST" class="logout-form">
                     <button type="submit" class="btn btn-outline">
                         LOGOUT <i class="bi bi-box-arrow-right"></i>

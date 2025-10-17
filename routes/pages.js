@@ -132,6 +132,38 @@ router.get('/dashboard', ensureAuthenticated, (req, res) => {
     res.status(403).send('Ruolo non riconosciuto.');
   }
 });
+
+/**
+ * GET /profile - Pagina profilo utente
+ */
+router.get('/profile', ensureAuthenticated, async (req, res) => {
+  try {
+    const userDAO = new UserDAO();
+    const user = await userDAO.getUserById(req.user.id);
+    
+    if (user.error) {
+      return res.status(404).render('errore', {
+        title: 'Errore',
+        user: req.user,
+        code: 404,
+        message: 'Utente non trovato.'
+      });
+    }
+
+    res.render('profile', {
+      title: 'My Profile - IRON GYM',
+      user: user
+    });
+  } catch (err) {
+    console.error('Errore nel caricamento profilo:', err);
+    res.status(500).render('errore', {
+      title: 'Errore',
+      user: req.user,
+      code: 500,
+      message: 'Errore nel caricamento del profilo.'
+    });
+  }
+});
 /**
  * GET /membership - Scelta piano
  */

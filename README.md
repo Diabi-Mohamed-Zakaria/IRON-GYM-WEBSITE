@@ -95,7 +95,7 @@ GYM_WEB/
 
 ### Client
 - **Username**: `luca.bianchi`
-- **Password**: `password123`
+- **Password**: `password1234`
 - **Ruolo**: Prenotazioni e recensioni
 
 ## 🔐 Altri Utenti di Test Disponibili
@@ -105,10 +105,10 @@ GYM_WEB/
 - `mike.trainer` / `password123`
 
 ### Client
+- `luca.bianchi` / `password1234`
 - `giulia.verdi` / `password123`
 - `marco.russo` / `password123`
 - `anna.ferrari` / `password123`
-- `paolo.romano` / `password123`
 
 ## 📊 Funzionalità Principali
 

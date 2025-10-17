@@ -58,16 +58,21 @@ router.get('/:id', ensureAuthenticated, ensureAdmin, async (req, res) => {
 // POST /api/users - crea nuovo utente (solo admin)
 router.post('/', ensureAuthenticated, ensureAdmin, async (req, res) => {
   try {
-    const { username, password, role, nome, cognome, email } = req.body;
+    const { username, password, role, nome, cognome, email, gender } = req.body;
     
     // Validazione campi obbligatori
-    if (!username || !password || !role || !nome || !cognome || !email) {
+    if (!username || !password || !role || !nome || !cognome || !email || !gender) {
       return res.status(400).json({ error: 'Tutti i campi sono obbligatori.' });
     }
     
     // Validazione ruolo
     if (!['admin', 'trainer', 'client'].includes(role)) {
       return res.status(400).json({ error: 'Ruolo non valido.' });
+    }
+    
+    // Validazione gender
+    if (!['male', 'female'].includes(gender)) {
+      return res.status(400).json({ error: 'Genere non valido.' });
     }
     
     // Validazione email
@@ -83,10 +88,111 @@ router.post('/', ensureAuthenticated, ensureAdmin, async (req, res) => {
       return res.status(409).json({ error: 'Username già in uso.' });
     }
     
-    const newId = await userDAO.createUser(username, password, role, nome, cognome, email);
+    const newId = await userDAO.createUser(username, password, role, nome, cognome, email, gender);
     const created = await userDAO.getUserById(newId);
     res.status(201).json(created);
   } catch (err) {
+    res.status(500).json({ error: 'Errore del server.' });
+  }
+});
+
+// PUT /api/users/profile - aggiorna profilo utente (utente autenticato)
+router.put('/profile', ensureAuthenticated, async (req, res) => {
+  try {
+    const { nome, cognome, email, currentPassword } = req.body;
+    const userId = req.user.id;
+    
+    // Validazione campi obbligatori
+    if (!nome || !cognome || !email || !currentPassword) {
+      return res.status(400).json({ error: 'Tutti i campi sono obbligatori.' });
+    }
+    
+    // Validazione email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ error: 'Email non valida.' });
+    }
+    
+    const userDAO = new UserDAO();
+    
+    // Verifica password corrente
+    const currentUser = await userDAO.getUserById(userId);
+    if (currentUser.error) {
+      return res.status(404).json({ error: 'Utente non trovato.' });
+    }
+    
+    // Verifica password corrente (per progetto scolastico - password in chiaro)
+    if (currentUser.password !== currentPassword) {
+      return res.status(400).json({ error: 'Password corrente non corretta.' });
+    }
+    
+    // Controlla se email è già in uso da altri utenti
+    const existingUser = await userDAO.getUserByUsername(currentUser.username);
+    if (existingUser && existingUser.email === email && existingUser.id !== userId) {
+      return res.status(409).json({ error: 'Email già in uso da un altro utente.' });
+    }
+    
+    // Aggiorna profilo
+    const updated = await userDAO.updateUser(userId, { nome, cognome, email });
+    
+    if (!updated) {
+      return res.status(500).json({ error: 'Errore durante l\'aggiornamento del profilo.' });
+    }
+    
+    // Restituisce i dati aggiornati
+    const updatedUser = await userDAO.getUserById(userId);
+    res.json(updatedUser);
+  } catch (err) {
+    console.error('Errore aggiornamento profilo:', err);
+    res.status(500).json({ error: 'Errore del server.' });
+  }
+});
+
+// PUT /api/users/password - aggiorna password utente (utente autenticato)
+router.put('/password', ensureAuthenticated, async (req, res) => {
+  try {
+    const { currentPassword, newPassword, confirmPassword } = req.body;
+    const userId = req.user.id;
+    
+    // Validazione campi obbligatori
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      return res.status(400).json({ error: 'Tutti i campi sono obbligatori.' });
+    }
+    
+    // Validazione lunghezza password
+    if (newPassword.length < 6) {
+      return res.status(400).json({ error: 'La nuova password deve essere di almeno 6 caratteri.' });
+    }
+    
+    // Validazione conferma password
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ error: 'Le password non coincidono.' });
+    }
+    
+    const userDAO = new UserDAO();
+    
+    // Verifica password corrente usando bcrypt
+    const isCurrentPasswordValid = await userDAO.verifyCurrentPassword(userId, currentPassword);
+    if (!isCurrentPasswordValid) {
+      return res.status(400).json({ error: 'Password corrente non corretta.' });
+    }
+    
+    // Verifica che la nuova password sia diversa da quella corrente
+    const isSamePassword = await userDAO.comparePassword(newPassword, (await userDAO.getUserById(userId)).password);
+    if (isSamePassword) {
+      return res.status(400).json({ error: 'La nuova password deve essere diversa da quella corrente.' });
+    }
+    
+    // Aggiorna password (viene hashata automaticamente nel DAO)
+    const updated = await userDAO.updatePassword(userId, newPassword);
+    
+    if (!updated) {
+      return res.status(500).json({ error: 'Errore durante l\'aggiornamento della password.' });
+    }
+    
+    res.json({ message: 'Password aggiornata con successo.' });
+  } catch (err) {
+    console.error('Errore aggiornamento password:', err);
     res.status(500).json({ error: 'Errore del server.' });
   }
 });

@@ -1,7 +1,6 @@
 'use strict';
 
 const sqlite3 = require('sqlite3').verbose();
-const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 
@@ -24,11 +23,9 @@ const db = new sqlite3.Database(dbPath, (err) => {
   console.log('✅ Nuovo database creato\n');
 });
 
-// Funzione per generare hash password
-function hashPassword(password) {
-  const salt = crypto.randomBytes(16).toString('hex');
-  const hash = crypto.scryptSync(password, salt, 32).toString('hex');
-  return { salt, hash };
+// Funzione per salvare password in chiaro (solo per progetto scolastico)
+function savePassword(password) {
+  return password; // Password in chiaro per semplicità
 }
 
 // Inizializza database
@@ -40,12 +37,12 @@ db.serialize(() => {
     CREATE TABLE users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       username TEXT UNIQUE NOT NULL,
-      hash TEXT NOT NULL,
-      salt TEXT NOT NULL,
+      password TEXT NOT NULL,
       role TEXT NOT NULL CHECK(role IN ('admin', 'trainer', 'client')),
       nome TEXT NOT NULL,
       cognome TEXT NOT NULL,
       email TEXT UNIQUE NOT NULL,
+      gender TEXT CHECK(gender IN ('male', 'female')),
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
@@ -95,22 +92,22 @@ db.serialize(() => {
 
     // INSERISCI UTENTI
     const users = [
-      { username: 'admin', password: 'password123', role: 'admin', nome: 'Mario', cognome: 'Rossi', email: 'admin@irongym.com' },
-      { username: 'john.trainer', password: 'password123', role: 'trainer', nome: 'John', cognome: 'Smith', email: 'john@irongym.com' },
-      { username: 'sara.trainer', password: 'password123', role: 'trainer', nome: 'Sara', cognome: 'Johnson', email: 'sara@irongym.com' },
-      { username: 'mike.trainer', password: 'password123', role: 'trainer', nome: 'Mike', cognome: 'Williams', email: 'mike@irongym.com' },
-      { username: 'luca.bianchi', password: 'password123', role: 'client', nome: 'Luca', cognome: 'Bianchi', email: 'luca@test.com' },
-      { username: 'giulia.verdi', password: 'password123', role: 'client', nome: 'Giulia', cognome: 'Verdi', email: 'giulia@test.com' },
-      { username: 'marco.russo', password: 'password123', role: 'client', nome: 'Marco', cognome: 'Russo', email: 'marco@test.com' },
-      { username: 'anna.ferrari', password: 'password123', role: 'client', nome: 'Anna', cognome: 'Ferrari', email: 'anna@test.com' },
-      { username: 'paolo.romano', password: 'password123', role: 'client', nome: 'Paolo', cognome: 'Romano', email: 'paolo@test.com' }
+      { username: 'admin', password: 'password123', role: 'admin', nome: 'Mario', cognome: 'Rossi', email: 'admin@irongym.com', gender: 'male' },
+      { username: 'john.trainer', password: 'password123', role: 'trainer', nome: 'John', cognome: 'Smith', email: 'john@irongym.com', gender: 'male' },
+      { username: 'sara.trainer', password: 'password123', role: 'trainer', nome: 'Sara', cognome: 'Johnson', email: 'sara@irongym.com', gender: 'female' },
+      { username: 'mike.trainer', password: 'password123', role: 'trainer', nome: 'Mike', cognome: 'Williams', email: 'mike@irongym.com', gender: 'male' },
+      { username: 'luca.bianchi', password: 'password123', role: 'client', nome: 'Luca', cognome: 'Bianchi', email: 'luca@test.com', gender: 'male' },
+      { username: 'giulia.verdi', password: 'password123', role: 'client', nome: 'Giulia', cognome: 'Verdi', email: 'giulia@test.com', gender: 'female' },
+      { username: 'marco.russo', password: 'password123', role: 'client', nome: 'Marco', cognome: 'Russo', email: 'marco@test.com', gender: 'male' },
+      { username: 'anna.ferrari', password: 'password123', role: 'client', nome: 'Anna', cognome: 'Ferrari', email: 'anna@test.com', gender: 'female' },
+      { username: 'paolo.romano', password: 'password123', role: 'client', nome: 'Paolo', cognome: 'Romano', email: 'paolo@test.com', gender: 'male' }
     ];
 
-    const stmt = db.prepare('INSERT INTO users (username, hash, salt, role, nome, cognome, email) VALUES (?, ?, ?, ?, ?, ?, ?)');
+    const stmt = db.prepare('INSERT INTO users (username, password, role, nome, cognome, email, gender) VALUES (?, ?, ?, ?, ?, ?, ?)');
 
     users.forEach(user => {
-      const { salt, hash } = hashPassword(user.password);
-      stmt.run(user.username, hash, salt, user.role, user.nome, user.cognome, user.email);
+      const password = savePassword(user.password);
+      stmt.run(user.username, password, user.role, user.nome, user.cognome, user.email, user.gender);
     });
 
     stmt.finalize(() => {

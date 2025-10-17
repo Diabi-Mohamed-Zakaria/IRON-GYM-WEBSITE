@@ -36,7 +36,7 @@
                     <div class="card-body">
                         <h3>Client Satisfaction <i class="bi bi-hand-thumbs-up"></i></h3>
                         <span class="display-5 fw-bold d-block mb-2"><%= stats.satisfaction %>%</span>
-                        <span class="badge bg-success">+2% from last month</span>
+                
                     </div>
                 </div>
             </div>
@@ -85,9 +85,6 @@
                                         <span class="badge bg-info" id="bookings-count-<%= cls.id %>">Loading...</span>
                                     </td>
                                     <td>
-                                        <button class="btn btn-sm btn-primary view-bookings-btn" data-class-id="<%= cls.id %>" data-class-name="<%= cls.name %>">
-                                            <i class="bi bi-eye"></i> View
-                                        </button>
                                         <button class="btn btn-sm btn-danger delete-class-btn" data-class-id="<%= cls.id %>" data-class-name="<%= cls.name %>">
                                             <i class="bi bi-trash"></i> Delete
                                         </button>
@@ -123,12 +120,11 @@
                             <th>DAY</th>
                             <th>TIME</th>
                             <th>BOOKED DATE</th>
-                            <th>ACTIONS</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="6" class="text-center">Loading bookings...</td>
+                            <td colspan="5" class="text-center">Loading bookings...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -194,6 +190,6 @@
 </div>
 
 <!-- Include JS -->
-<script src="/javascripts/trainer-dashboerd.js"></script>
+<script src="/javascripts/trainer-dashboard.js"></script>
 
 <%- include('partials/footer') %>

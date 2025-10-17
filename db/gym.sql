@@ -23,6 +23,7 @@ CREATE TABLE users (
     nome TEXT NOT NULL,
     cognome TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
+    gender TEXT CHECK(gender IN ('male', 'female')),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -112,22 +113,22 @@ CREATE TABLE reviews (
 -- Hash generato con: crypto.scrypt('password123', salt, 32)
 
 -- Admin
-INSERT INTO users (username, hash, salt, role, nome, cognome, email) VALUES 
-('admin', 'f8d5e3a2b7c4d9e6f1a8b5c2d7e4f9a6b3c8d5e2f7a4b9c6d3e8f5a2b7c4d9e6', '1234567890abcdef1234567890abcdef', 'admin', 'Mario', 'Rossi', 'admin@irongym.com');
+INSERT INTO users (username, hash, salt, role, nome, cognome, email, gender) VALUES 
+('admin', 'f8d5e3a2b7c4d9e6f1a8b5c2d7e4f9a6b3c8d5e2f7a4b9c6d3e8f5a2b7c4d9e6', '1234567890abcdef1234567890abcdef', 'admin', 'Mario', 'Rossi', 'admin@irongym.com', 'male');
 
 -- Trainers
-INSERT INTO users (username, hash, salt, role, nome, cognome, email) VALUES 
-('john.trainer', 'f8d5e3a2b7c4d9e6f1a8b5c2d7e4f9a6b3c8d5e2f7a4b9c6d3e8f5a2b7c4d9e6', '1234567890abcdef1234567890abcdef', 'trainer', 'John', 'Smith', 'john@irongym.com'),
-('sara.trainer', 'f8d5e3a2b7c4d9e6f1a8b5c2d7e4f9a6b3c8d5e2f7a4b9c6d3e8f5a2b7c4d9e6', '1234567890abcdef1234567890abcdef', 'trainer', 'Sara', 'Johnson', 'sara@irongym.com'),
-('mike.trainer', 'f8d5e3a2b7c4d9e6f1a8b5c2d7e4f9a6b3c8d5e2f7a4b9c6d3e8f5a2b7c4d9e6', '1234567890abcdef1234567890abcdef', 'trainer', 'Mike', 'Williams', 'mike@irongym.com');
+INSERT INTO users (username, hash, salt, role, nome, cognome, email, gender) VALUES 
+('john.trainer', 'f8d5e3a2b7c4d9e6f1a8b5c2d7e4f9a6b3c8d5e2f7a4b9c6d3e8f5a2b7c4d9e6', '1234567890abcdef1234567890abcdef', 'trainer', 'John', 'Smith', 'john@irongym.com', 'male'),
+('sara.trainer', 'f8d5e3a2b7c4d9e6f1a8b5c2d7e4f9a6b3c8d5e2f7a4b9c6d3e8f5a2b7c4d9e6', '1234567890abcdef1234567890abcdef', 'trainer', 'Sara', 'Johnson', 'sara@irongym.com', 'female'),
+('mike.trainer', 'f8d5e3a2b7c4d9e6f1a8b5c2d7e4f9a6b3c8d5e2f7a4b9c6d3e8f5a2b7c4d9e6', '1234567890abcdef1234567890abcdef', 'trainer', 'Mike', 'Williams', 'mike@irongym.com', 'male');
 
 -- Clients
-INSERT INTO users (username, hash, salt, role, nome, cognome, email) VALUES 
-('luca.bianchi', 'f8d5e3a2b7c4d9e6f1a8b5c2d7e4f9a6b3c8d5e2f7a4b9c6d3e8f5a2b7c4d9e6', '1234567890abcdef1234567890abcdef', 'client', 'Luca', 'Bianchi', 'luca@test.com'),
-('giulia.verdi', 'f8d5e3a2b7c4d9e6f1a8b5c2d7e4f9a6b3c8d5e2f7a4b9c6d3e8f5a2b7c4d9e6', '1234567890abcdef1234567890abcdef', 'client', 'Giulia', 'Verdi', 'giulia@test.com'),
-('marco.russo', 'f8d5e3a2b7c4d9e6f1a8b5c2d7e4f9a6b3c8d5e2f7a4b9c6d3e8f5a2b7c4d9e6', '1234567890abcdef1234567890abcdef', 'client', 'Marco', 'Russo', 'marco@test.com'),
-('anna.ferrari', 'f8d5e3a2b7c4d9e6f1a8b5c2d7e4f9a6b3c8d5e2f7a4b9c6d3e8f5a2b7c4d9e6', '1234567890abcdef1234567890abcdef', 'client', 'Anna', 'Ferrari', 'anna@test.com'),
-('paolo.romano', 'f8d5e3a2b7c4d9e6f1a8b5c2d7e4f9a6b3c8d5e2f7a4b9c6d3e8f5a2b7c4d9e6', '1234567890abcdef1234567890abcdef', 'client', 'Paolo', 'Romano', 'paolo@test.com');
+INSERT INTO users (username, hash, salt, role, nome, cognome, email, gender) VALUES 
+('luca.bianchi', 'f8d5e3a2b7c4d9e6f1a8b5c2d7e4f9a6b3c8d5e2f7a4b9c6d3e8f5a2b7c4d9e6', '1234567890abcdef1234567890abcdef', 'client', 'Luca', 'Bianchi', 'luca@test.com', 'male'),
+('giulia.verdi', 'f8d5e3a2b7c4d9e6f1a8b5c2d7e4f9a6b3c8d5e2f7a4b9c6d3e8f5a2b7c4d9e6', '1234567890abcdef1234567890abcdef', 'client', 'Giulia', 'Verdi', 'giulia@test.com', 'female'),
+('marco.russo', 'f8d5e3a2b7c4d9e6f1a8b5c2d7e4f9a6b3c8d5e2f7a4b9c6d3e8f5a2b7c4d9e6', '1234567890abcdef1234567890abcdef', 'client', 'Marco', 'Russo', 'marco@test.com', 'male'),
+('anna.ferrari', 'f8d5e3a2b7c4d9e6f1a8b5c2d7e4f9a6b3c8d5e2f7a4b9c6d3e8f5a2b7c4d9e6', '1234567890abcdef1234567890abcdef', 'client', 'Anna', 'Ferrari', 'anna@test.com', 'female'),
+('paolo.romano', 'f8d5e3a2b7c4d9e6f1a8b5c2d7e4f9a6b3c8d5e2f7a4b9c6d3e8f5a2b7c4d9e6', '1234567890abcdef1234567890abcdef', 'client', 'Paolo', 'Romano', 'paolo@test.com', 'male');
 
 -- CLASSI DI TEST
 INSERT INTO classes (name, trainer_id, time, capacity, day_of_week, description) VALUES 

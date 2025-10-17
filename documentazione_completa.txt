@@ -39,6 +39,7 @@ DESCRIZIONE: Applicazione web per gestione palestra IRON GYM
 │   ├── 📄 index.ejs               # Homepage
 │   ├── 📄 login.ejs               # Pagina login
 │   ├── 📄 join.ejs                # Pagina registrazione
+│   ├── 📄 profile.ejs             # Pagina profilo utente
 │   ├── 📄 classes.ejs             # Pagina classi
 │   ├── 📄 trainers.ejs            # Pagina trainers
 │   ├── 📄 membership.ejs          # Pagina membership
@@ -51,8 +52,15 @@ DESCRIZIONE: Applicazione web per gestione palestra IRON GYM
 ├── 📁 public/                     # File statici
 │   ├── 📁 images/                 # Immagini
 │   ├── 📁 stylesheets/            # CSS
-│   └── 📁 javascripts/            # JavaScript client-side
-│       ├── 📄 app.js              # JavaScript principale
+│   └── 📁 javascripts/            # JavaScript client-side modulare
+│       ├── 📄 utils.js            # Utility comuni
+│       ├── 📄 auth.js             # Autenticazione e login
+│       ├── 📄 profile.js          # Gestione profilo utente
+│       ├── 📄 classes.js          # Gestione classi
+│       ├── 📄 reviews.js          # Sistema recensioni
+│       ├── 📄 membership.js       # Sistema membership
+│       ├── 📄 payments.js         # Gestione pagamenti
+│       ├── 📄 app.js              # Core e inizializzazione
 │       ├── 📄 admin-dashboerd.js  # Dashboard admin
 │       ├── 📄 cliente-dashboerd.js # Dashboard cliente
 │       └── 📄 trainer-dashboerd.js # Dashboard trainer
@@ -63,48 +71,63 @@ DESCRIZIONE: Applicazione web per gestione palestra IRON GYM
 ================================================================================
 
 🔧 BACKEND:
-- Node.js (Runtime JavaScript)
-- Express.js (Framework web)
-- SQLite3 (Database)
-- Passport.js (Autenticazione)
-- Express-session (Gestione sessioni)
-- Crypto (Hashing password)
-- Morgan (Logging HTTP)
+- Node.js (Runtime JavaScript server-side)
+- Express.js (Framework web e routing)
+- SQLite3 (Database relazionale embedded)
+- Passport.js (Middleware autenticazione)
+- Express-session (Gestione sessioni HTTP)
+- Express-validator (Validazione e sanitizzazione input)
+- Connect-flash (Messaggi flash per sessioni)
+- Cookie-parser (Parsing cookie HTTP)
+- Http-errors (Gestione errori HTTP standardizzati)
+- Morgan (Logger middleware HTTP)
+- Path (Gestione percorsi file system)
+- FS (Operazioni file system)
 
 🎨 FRONTEND:
-- EJS (Template engine)
-- Bootstrap 5.3.5 (Framework CSS)
-- Bootstrap Icons 1.13.1 (Icone)
-- JavaScript ES6+ (Client-side)
+- EJS (Template engine per server-side rendering)
+- Bootstrap 5.3.5 (Framework CSS responsive)
+- Bootstrap Icons 1.13.1 (Libreria icone SVG)
+- JavaScript ES6+ (Client-side scripting)
+- HTML5 (Markup semantico)
+- CSS3 (Styling e animazioni)
 
 🔐 SICUREZZA:
-- Passport Local Strategy
-- Password hashing con crypto.scrypt
-- Session-based authentication
-- Role-based access control
-- Input validation
+- Passport Local Strategy (Autenticazione locale)
+- Password in chiaro (Solo per progetto scolastico - NON utilizzare in produzione)
+- Session-based authentication (Gestione sessioni)
+- Role-based access control (Controllo accessi per ruolo)
+- Input validation e sanitizzazione (Sicurezza input)
+- SQL injection prevention (Protezione database)
+- XSS protection (Protezione cross-site scripting)
 
 ================================================================================
                                 PACKAGE.JSON
 ================================================================================
 
 📦 DIPENDENZE PRINCIPALI:
-- express: ^4.18.2          # Framework web
+- express: ^4.18.2          # Framework web Node.js
 - sqlite3: ^5.1.7           # Database SQLite
-- passport: ^0.7.0          # Autenticazione
+- passport: ^0.7.0          # Autenticazione middleware
 - passport-local: ^1.0.0    # Strategia autenticazione locale
-- express-session: ^1.17.3  # Gestione sessioni
-- ejs: ^3.1.10              # Template engine
-- bootstrap: ^5.3.5         # Framework CSS
-- bootstrap-icons: ^1.13.1  # Icone
-- express-validator: ^7.2.1 # Validazione input
-- connect-flash: ^0.1.1     # Messaggi flash
-- cookie-parser: ^1.4.6     # Parser cookie
-- http-errors: ^2.0.0       # Gestione errori HTTP
-- morgan: ^1.10.0           # Logging HTTP
+- express-session: ^1.17.3  # Gestione sessioni HTTP
+- ejs: ^3.1.10              # Template engine per rendering server-side
+- bootstrap: ^5.3.5         # Framework CSS responsive
+- bootstrap-icons: ^1.13.1  # Libreria icone SVG
+- express-validator: ^7.2.1 # Validazione e sanitizzazione input
+- connect-flash: ^0.1.1     # Messaggi flash per sessioni
+- cookie-parser: ^1.4.6     # Parser cookie HTTP
+- http-errors: ^2.0.0       # Creazione errori HTTP standardizzati
+- morgan: ^1.10.0           # Logger middleware HTTP
+- pug: ^3.0.3               # Template engine (installato ma non utilizzato)
 
 📦 DIPENDENZE SVILUPPO:
-- nodemon: ^3.1.10          # Auto-restart server
+- nodemon: ^3.1.10          # Auto-restart server durante sviluppo
+
+🔧 MODULI NODE.JS BUILT-IN UTILIZZATI:
+- path: Gestione percorsi file e directory
+- fs: Operazioni file system (lettura/scrittura file)
+- http: Server HTTP (utilizzato indirettamente da Express)
 
 🚀 SCRIPT:
 - start: "node server.js"   # Avvio produzione
@@ -157,9 +180,11 @@ Classe per gestione operazioni database utenti
 
 📋 METODI PRINCIPALI:
 - getUserByUsername(username): Recupera utente per username
-- getUserById(id): Recupera utente per ID
+- getUserById(id): Recupera utente per ID (include password)
 - getUser(username): Recupera credenziali per Passport
-- createUser(): Crea nuovo utente con hash password
+- createUser(): Crea nuovo utente con password in chiaro
+- updateUser(id, userData): Aggiorna dati profilo utente
+- updatePassword(id, newPassword): Aggiorna password utente
 - getAllUsers(): Recupera tutti gli utenti
 - getUsersByRole(role): Recupera utenti per ruolo
 - searchUsers(query): Cerca utenti
@@ -247,6 +272,7 @@ Route per pagine EJS (server-side rendering)
 
 📋 ROUTE PROTETTE:
 - GET /dashboard: Redirect dashboard appropriata
+- GET /profile: Pagina profilo utente
 - GET /membership: Scelta piano
 - GET /payment-status: Status pagamenti
 - GET /admin/dashboard: Dashboard admin
@@ -264,6 +290,8 @@ Route per pagine EJS (server-side rendering)
 - GET /trainers: Tutti i trainers (pubblico)
 - GET /:id: Dettaglio utente (admin)
 - POST /: Crea utente (admin)
+- PUT /profile: Aggiorna profilo utente (autenticato)
+- PUT /password: Aggiorna password utente (autenticato)
 - GET /search: Cerca utenti (admin)
 - DELETE /:id: Elimina utente (admin)
 
@@ -308,32 +336,77 @@ Route per pagine EJS (server-side rendering)
 - DELETE /:id: Elimina recensione
 
 ================================================================================
-                                JAVASCRIPT CLIENT-SIDE
+                                JAVASCRIPT CLIENT-SIDE MODULARE
 ================================================================================
 
-📄 APP.JS:
-JavaScript principale per funzionalità comuni
+📄 STRUTTURA MODULARE:
+Il JavaScript è stato suddiviso in moduli specializzati per migliorare manutenibilità e organizzazione.
 
-🔧 CLASSI PRINCIPALI:
-- ApiManager: Gestione chiamate API
-- Validator: Validazione form
-- MembershipPlans: Configurazione piani
+🔧 MODULI PRINCIPALI:
 
-📋 FUNZIONI PRINCIPALI:
+📄 UTILS.JS (150 righe) - Utility Comuni:
 - showToast(): Notifiche toast
 - apiFetch(): Wrapper fetch API
-- doLogout(): Logout utente
+- ApiManager: Gestione chiamate API
+- Validator: Validazione form
 - validateForm(): Validazione form
+- setFieldInvalid(): Gestione errori form
+- clearFieldInvalid(): Pulizia errori form
 - scrollToNext(): Scroll homepage
-- loadTrainers(): Carica trainers
-- setupReviewForm(): Setup form recensioni
-- searchClasses(): Ricerca classi
-- bookClass(): Prenotazione classe
+- doLogout(): Logout utente
+- bindLogout(): Binding eventi logout
+
+📄 AUTH.JS (150 righe) - Autenticazione:
 - handleRegistration(): Gestione registrazione
 - handleLogin(): Gestione login
-- selectPlan(): Selezione piano membership
-- processCardPayment(): Simulazione pagamento carta
-- loadPaymentStatusData(): Carica dati pagamenti
+- showRegistrationError(): Errori registrazione
+- showRegistrationSuccess(): Successo registrazione
+- showLoginError(): Errori login
+- initJoinPage(): Inizializzazione pagina registrazione
+- initLoginPage(): Inizializzazione pagina login
+
+📄 PROFILE.JS (200 righe) - Gestione Profilo:
+- handleProfileUpdate(): Aggiornamento profilo
+- handlePasswordUpdate(): Cambio password
+- showProfileError(): Errori profilo
+- showProfileSuccess(): Successo profilo
+- showPasswordError(): Errori password
+- showPasswordSuccess(): Successo password
+- initProfilePage(): Inizializzazione pagina profilo
+
+📄 CLASSES.JS (100 righe) - Gestione Classi:
+- searchClasses(): Ricerca classi
+- bookClass(): Prenotazione classe
+- initClassesPage(): Inizializzazione pagina classi
+
+📄 REVIEWS.JS (150 righe) - Sistema Recensioni:
+- loadTrainers(): Caricamento trainers
+- setupReviewForm(): Setup form recensioni
+- showReviewError(): Errori recensioni
+- showReviewSuccess(): Successo recensioni
+
+📄 MEMBERSHIP.JS (300 righe) - Sistema Membership:
+- MembershipPlans: Configurazione piani
+- selectPlan(): Selezione piano
+- updateMembershipPrices(): Aggiornamento prezzi
+- processCardPayment(): Processamento pagamento carta
+- showCardPaymentModal(): Modal pagamento carta
+- setupCardPaymentForm(): Setup form pagamento
+- showPaymentSuccess(): Successo pagamento
+- showPaymentError(): Errori pagamento
+- initMembershipPage(): Inizializzazione pagina membership
+
+📄 PAYMENTS.JS (200 righe) - Gestione Pagamenti:
+- loadPaymentStatusData(): Caricamento dati pagamenti
+- displayMembershipStatus(): Visualizzazione status membership
+- displayPaymentHistory(): Visualizzazione cronologia pagamenti
+- initPaymentStatusPage(): Inizializzazione pagina pagamenti
+
+📄 APP.JS (100 righe) - Core e Inizializzazione:
+- Coordinamento moduli
+- Inizializzazione generale
+- Esposizione globale funzioni
+- Event listeners DOM ready
 
 📄 ADMIN-DASHBOERD.JS:
 JavaScript per dashboard amministratore
@@ -407,10 +480,11 @@ JavaScript per dashboard trainer
 - ensureClient: Solo clienti
 
 📋 FLUSSO AUTENTICAZIONE:
-1. Registrazione: Crea utente con password hashata
-2. Login: Verifica credenziali con Passport
+1. Registrazione: Crea utente con password in chiaro e gender
+2. Login: Verifica credenziali con Passport (confronto diretto)
 3. Sessione: Salva ID utente in sessione
 4. Autorizzazione: Verifica ruolo per accesso risorse
+5. Profilo: Gestione dati personali e aggiornamento password
 
 ================================================================================
                                 SISTEMA MEMBERSHIP
@@ -487,8 +561,7 @@ JavaScript per dashboard trainer
 📊 TABELLA USERS:
 - id (INTEGER PRIMARY KEY)
 - username (TEXT UNIQUE)
-- hash (TEXT) - Password hashata
-- salt (TEXT) - Salt per password
+- password (TEXT) - Password in chiaro (solo per progetto scolastico)
 - role (TEXT) - admin/trainer/client
 - nome (TEXT)
 - cognome (TEXT)
@@ -550,9 +623,8 @@ JavaScript per dashboard trainer
 ================================================================================
 
 🔐 SICUREZZA PASSWORD:
-- Hashing con crypto.scrypt
-- Salt random per ogni password
-- Timing-safe comparison
+- Password in chiaro (SOLO per progetto scolastico)
+- ⚠️ ATTENZIONE: NON utilizzare in produzione
 - Lunghezza minima 6 caratteri
 
 🛡️ VALIDAZIONE INPUT:
@@ -572,6 +644,39 @@ JavaScript per dashboard trainer
 - XSS protection
 - CSRF protection (session-based)
 - Input sanitization
+
+================================================================================
+                                SISTEMA GESTIONE PROFILO
+================================================================================
+
+👤 GESTIONE PROFILO UTENTE:
+- Pagina profilo dedicata (/profile)
+- Aggiornamento dati personali (nome, cognome, email)
+- Campi non modificabili (username, role, gender)
+- Validazione password corrente per modifiche
+- Interfaccia separata per cambio password
+
+🔐 AGGIORNAMENTO PASSWORD:
+- Sezione dedicata nel profilo
+- Verifica password corrente obbligatoria
+- Validazione nuova password (min 6 caratteri)
+- Conferma password per sicurezza
+- Password diversa da quella corrente
+- Pulizia automatica form dopo successo
+
+🛡️ SICUREZZA PROFILO:
+- Autenticazione obbligatoria per accesso
+- Verifica identità con password corrente
+- Validazione server-side completa
+- Controllo email univoca
+- Prevenzione modifiche non autorizzate
+
+📋 API PROFILO:
+- PUT /api/users/profile: Aggiorna dati profilo
+- PUT /api/users/password: Aggiorna password
+- Validazione completa lato server
+- Gestione errori dettagliata
+- Feedback utente immediato
 
 ================================================================================
                                 FUNZIONALITÀ AVANZATE
@@ -638,6 +743,54 @@ node db/init-db.js
 - Client: luca.bianchi / password123
 
 ================================================================================
+                                MODULARIZZAZIONE JAVASCRIPT
+================================================================================
+
+🔧 ARCHITETTURA MODULARE:
+Il JavaScript è stato completamente modularizzato per migliorare manutenibilità e organizzazione.
+
+📊 RISULTATI MODULARIZZAZIONE:
+- app.js originale: 1054 righe → app.js modulare: ~100 righe
+- Riduzione: 90% del codice principale
+- Moduli creati: 8 file specializzati
+- Manutenibilità: Significativamente migliorata
+
+🎯 VANTAGGI MODULARIZZAZIONE:
+- Manutenibilità: Ogni file ha una responsabilità specifica
+- Leggibilità: Codice più organizzato e comprensibile
+- Riusabilità: Moduli riutilizzabili
+- Performance: Caricamento più efficiente
+- Collaborazione: Team può lavorare su file diversi
+- Compatibilità: Tutte le funzionalità esistenti mantenute
+- CSS centralizzato: Eliminati stili inline per migliore organizzazione
+
+📋 ORDINE DI CARICAMENTO:
+1. utils.js - Utility base
+2. auth.js - Autenticazione
+3. profile.js - Profilo
+4. classes.js - Classi
+5. reviews.js - Recensioni
+6. membership.js - Membership
+7. payments.js - Pagamenti
+8. app.js - Inizializzazione finale
+
+🔄 COMPATIBILITÀ:
+- Tutte le funzionalità esistenti sono mantenute
+- API globale rimane identica
+- Event listeners funzionano correttamente
+- Backward compatibility completa
+
+🎨 PULIZIA CSS:
+- Eliminati tutti gli stili inline dai file EJS
+- Stili centralizzati nel file styles.css
+- Migliorata manutenibilità del CSS
+- Consistenza visiva garantita
+
+🔧 CORREZIONI:
+- Corretto percorso icona favicon da /img/ a /images/
+- Risolto problema icona non caricata nel browser
+
+================================================================================
                                 ARCHITETTURA E PATTERN
 ================================================================================
 
@@ -646,12 +799,14 @@ node db/init-db.js
 - DAO Pattern (Data Access Object)
 - Middleware Pattern
 - REST API Design
+- Modular JavaScript Architecture
 
 📁 ORGANIZZAZIONE CODICE:
 - Separazione concerns
 - Moduli riutilizzabili
 - Configurazione centralizzata
 - Error handling centralizzato
+- JavaScript modulare
 
 🔄 FLUSSO DATI:
 1. Client → API Endpoint
@@ -659,6 +814,243 @@ node db/init-db.js
 3. Controller → Business Logic
 4. DAO → Database Operations
 5. Response → JSON/HTML
+
+================================================================================
+                                ⚠️ AVVERTENZE SICUREZZA
+================================================================================
+
+🚨 IMPORTANTE - SOLO PER PROGETTO SCOLASTICO:
+- Le password sono salvate in chiaro nel database
+- NON utilizzare questo sistema in produzione
+- Per un sistema reale, implementare:
+  * Hashing password con bcrypt o scrypt
+  * Salt random per ogni password
+  * Timing-safe comparison
+  * Rate limiting per login
+  * HTTPS obbligatorio
+  * Validazione input rigorosa
+
+🔒 SICUREZZA PRODUZIONE:
+- Utilizzare librerie come bcrypt per hashing
+- Implementare autenticazione a due fattori
+- Utilizzare HTTPS per tutte le comunicazioni
+- Implementare sessioni sicure con HttpOnly cookies
+- Validare e sanitizzare tutti gli input
+- Implementare rate limiting e protezione CSRF
+
+================================================================================
+                                SCELTE DI PROGETTAZIONE
+================================================================================
+
+🎨 SCELTE DI LAYOUT E DESIGN:
+
+📱 DESIGN RESPONSIVE:
+- **Bootstrap 5.3.5**: Scelto per garantire compatibilità cross-device e responsive design
+- **Mobile-first approach**: Layout ottimizzato per dispositivi mobili con breakpoint progressivi
+- **Grid system**: Utilizzo del sistema grid di Bootstrap per layout flessibili e consistenti
+- **Componenti predefiniti**: Sfruttamento di card, modals, forms e navigation di Bootstrap
+
+🎨 TEMA VISIVO:
+- **Dark theme moderno**: Palette colori scura (#0e0f12, #15171c) per un look professionale
+- **Accenti dorati**: Gradiente oro (#f7d98b, #eab308, #b45309) per elementi premium
+- **Tipografia system**: Font stack system-ui per compatibilità e performance
+- **Iconografia Bootstrap Icons**: Set completo di icone SVG per consistenza visiva
+
+🏗️ STRUTTURA LAYOUT:
+- **Header fisso**: Navbar sempre visibile con logo e navigazione principale
+- **Hero section**: Sezione introduttiva con call-to-action prominenti
+- **Sezioni modulari**: About, Features, Reviews organizzate in sezioni distinte
+- **Footer informativo**: Contatti, link rapidi e informazioni legali
+
+📄 COMPONENTI UTILIZZATI:
+
+🔧 COMPONENTI BOOTSTRAP:
+- **Navigation**: Navbar responsive con dropdown e mobile menu
+- **Cards**: Per feature cards, review cards e dashboard widgets
+- **Modals**: Per form di registrazione, recensioni e pagamenti
+- **Forms**: Input groups, validation states e form controls
+- **Buttons**: Varianti primary, secondary, outline con stati hover
+- **Tables**: Per dashboard admin con sorting e pagination
+- **Alerts**: Per messaggi di successo, errore e informazione
+- **Badges**: Per stati membership, ruoli utente e status
+
+🎯 COMPONENTI CUSTOM:
+- **Toast notifications**: Sistema di notifiche personalizzato
+- **Rating stars**: Componente rating interattivo per recensioni
+- **Progress bars**: Per statistiche dashboard e completamento profilo
+- **Gradient text**: Effetti testo con gradiente oro per branding
+- **Scroll indicators**: Freccia scroll per navigazione homepage
+
+================================================================================
+                                SCELTE IMPLEMENTATIVE
+================================================================================
+
+🏗️ ARCHITETTURA BACKEND:
+
+🔧 PATTERN MVC:
+- **Model**: DAO (Data Access Object) per astrazione database
+- **View**: Template EJS per rendering server-side
+- **Controller**: Route Express.js per gestione richieste
+- **Separazione concerns**: Logica business separata da presentazione
+
+📊 DATABASE DESIGN:
+- **SQLite**: Scelto per semplicità deployment e portabilità
+- **Relazioni normalizzate**: Foreign keys per integrità referenziale
+- **Indici ottimizzati**: Per performance su query frequenti
+- **Constraints**: Check constraints per validazione dati
+- **Cascade operations**: DELETE CASCADE per pulizia automatica
+
+🔐 SISTEMA AUTENTICAZIONE:
+- **Passport.js**: Middleware standard per autenticazione
+- **Local Strategy**: Autenticazione username/password
+- **Session-based**: Gestione stato utente tramite sessioni
+- **Role-based access**: Controllo accessi granulare per ruoli
+- **Middleware chain**: ensureAuthenticated, ensureAdmin, ensureTrainer, ensureClient
+
+🌐 API REST DESIGN:
+- **RESTful endpoints**: URL semantici e metodi HTTP appropriati
+- **JSON responses**: Formato standard per comunicazione client-server
+- **Error handling**: Codici HTTP standardizzati e messaggi di errore
+- **Validation**: Express-validator per sanitizzazione input
+- **Pagination**: Supporto per risultati paginati (futuro)
+
+================================================================================
+                                SCELTE FUNZIONALI
+================================================================================
+
+👥 SISTEMA UTENTI:
+
+🔐 RUOLI E PERMESSI:
+- **3 ruoli distinti**: Admin (gestione completa), Trainer (classi), Client (prenotazioni)
+- **Gerarchia permessi**: Admin > Trainer > Client con escalation appropriata
+- **Dashboard personalizzate**: Interfacce specifiche per ogni ruolo
+- **Controllo proprietà**: Utenti possono modificare solo i propri dati
+
+📋 GESTIONE PROFILO:
+- **Campi modificabili**: Nome, cognome, email (dati personali)
+- **Campi protetti**: Username, ruolo, genere (immutabili)
+- **Validazione password**: Verifica password corrente per modifiche
+- **Email univoca**: Controllo duplicati per integrità dati
+
+💳 SISTEMA MEMBERSHIP:
+
+🎯 PIANI STRUTTURATI:
+- **3 tier system**: Basic, Premium, Elite con feature progressive
+- **Pricing flessibile**: Mensile/annuale con sconti annuali
+- **Feature differentiation**: Accesso graduale a servizi premium
+- **Status tracking**: Active, expired, cancelled per gestione ciclo vita
+
+💰 GESTIONE PAGAMENTI:
+- **Multi-metodo**: Cash, card, bank transfer per flessibilità
+- **Stati dettagliati**: Pending, completed, failed, refunded
+- **Revenue tracking**: Monitoraggio entrate per business intelligence
+- **Due date management**: Gestione scadenze e reminder
+
+📅 SISTEMA PRENOTAZIONI:
+
+🎫 GESTIONE CLASSI:
+- **Capacità limitata**: Controllo posti disponibili per classe
+- **Prevenzione doppie**: UNIQUE constraint su user_id + class_id
+- **Assegnazione trainer**: Relazione many-to-one con utenti trainer
+- **Orari flessibili**: Supporto per tutti i giorni della settimana
+
+⭐ SISTEMA RECENSIONI:
+
+📊 RATING STRUTTURATO:
+- **Dual type**: Recensioni per palestra e trainer specifici
+- **Rating 1-5**: Scala standardizzata per comparabilità
+- **Controllo duplicati**: Una recensione per trainer per utente
+- **Moderazione**: Admin può eliminare recensioni inappropriate
+
+================================================================================
+                                SCELTE TECNOLOGICHE
+================================================================================
+
+🔧 STACK TECNOLOGICO:
+
+⚡ BACKEND:
+- **Node.js**: Runtime JavaScript per performance e sviluppo rapido
+- **Express.js**: Framework minimalista con middleware ecosystem
+- **SQLite3**: Database embedded per semplicità e portabilità
+- **Passport.js**: Standard de facto per autenticazione Node.js
+
+🎨 FRONTEND:
+- **EJS**: Template engine semplice con supporto JavaScript
+- **Bootstrap 5.3.5**: Framework CSS maturo e ben documentato
+- **Vanilla JavaScript**: ES6+ modulare senza dipendenze esterne
+- **CSS Custom Properties**: Variabili CSS per theming consistente
+
+🔐 SICUREZZA:
+- **Session-based auth**: Più sicuro di JWT per applicazioni web tradizionali
+- **Input validation**: Doppia validazione client e server-side
+- **SQL injection prevention**: Prepared statements per tutte le query
+- **XSS protection**: Sanitizzazione output e CSP headers
+
+📦 GESTIONE DIPENDENZE:
+- **NPM**: Package manager standard per ecosystem Node.js
+- **Version pinning**: package-lock.json per riproducibilità
+- **Minimal dependencies**: Solo librerie essenziali per ridurre attack surface
+- **Regular updates**: Dipendenze aggiornate per security patches
+
+================================================================================
+                                SCELTE ARCHITETTURALI
+================================================================================
+
+🏗️ ORGANIZZAZIONE CODICE:
+
+📁 STRUTTURA PROGETTO:
+- **Separation of concerns**: Modelli, viste, controller in directory separate
+- **API separation**: Endpoint REST in directory dedicata
+- **Static assets**: CSS, JS, immagini organizzati per tipo
+- **Configuration**: File di configurazione centralizzati
+
+🔧 MODULARIZZAZIONE JAVASCRIPT:
+- **IIFE pattern**: Immediately Invoked Function Expressions per scope isolation
+- **Namespace pattern**: Oggetti globali per organizzazione funzioni
+- **Dependency injection**: Utils condivisi tra moduli
+- **Event delegation**: Gestione eventi centralizzata
+
+📊 DATABASE ARCHITECTURE:
+- **DAO Pattern**: Data Access Objects per astrazione database
+- **Connection pooling**: Gestione connessioni ottimizzata
+- **Transaction support**: Operazioni atomiche per consistenza
+- **Migration support**: Script di inizializzazione per setup
+
+🔄 ERROR HANDLING:
+- **Centralized error handling**: Middleware Express per gestione errori
+- **Custom error classes**: Errori specifici per diversi scenari
+- **Logging**: Morgan per logging HTTP requests
+- **Graceful degradation**: Fallback per errori non critici
+
+================================================================================
+                                SCELTE UX/UI
+================================================================================
+
+🎯 USER EXPERIENCE:
+
+📱 RESPONSIVE DESIGN:
+- **Mobile-first**: Design ottimizzato per dispositivi mobili
+- **Touch-friendly**: Bottoni e elementi interattivi dimensionati appropriatamente
+- **Progressive enhancement**: Funzionalità base su tutti i dispositivi
+- **Performance**: Lazy loading e ottimizzazioni per mobile
+
+🎨 VISUAL HIERARCHY:
+- **Typography scale**: Gerarchia tipografica chiara per leggibilità
+- **Color psychology**: Colori scuri per professionalità, oro per premium
+- **Spacing system**: Margini e padding consistenti per ritmo visivo
+- **Contrast ratios**: Controllo accessibilità per utenti con disabilità visive
+
+⚡ INTERAZIONI:
+- **Immediate feedback**: Toast notifications per azioni utente
+- **Loading states**: Indicatori di caricamento per operazioni asincrone
+- **Form validation**: Validazione real-time con messaggi chiari
+- **Smooth transitions**: Animazioni CSS per transizioni fluide
+
+🔍 ACCESSIBILITÀ:
+- **Semantic HTML**: Tag HTML5 semantici per screen readers
+- **ARIA labels**: Attributi accessibilità per elementi interattivi
+- **Keyboard navigation**: Supporto completo navigazione da tastiera
+- **Color independence**: Informazioni non dipendenti solo dal colore
 
 ================================================================================
                                 CONCLUSIONI
@@ -669,15 +1061,21 @@ node db/init-db.js
 - Gestione ruoli e autorizzazioni
 - CRUD completo per tutte le entità
 - Dashboard personalizzate per ruolo
+- Sistema gestione profilo utente
+- Sistema aggiornamento password
 - Sistema membership e pagamenti
 - Sistema prenotazioni classi
 - Sistema recensioni e rating
 - API REST complete
 - Interfaccia utente responsive
 - Database relazionale SQLite
+- JavaScript modulare e organizzato
+- Architettura scalabile e manutenibile
 
 🎯 FUNZIONALITÀ CHIAVE:
 - Registrazione e login utenti
+- Gestione profilo personale
+- Aggiornamento password sicuro
 - Gestione classi e trainer
 - Prenotazione e cancellazione classi
 - Sistema membership con piani
@@ -691,12 +1089,22 @@ node db/init-db.js
 - SQLite per database
 - EJS per templating
 - Bootstrap per UI
-- JavaScript ES6+
+- JavaScript ES6+ modulare
 - Passport per autenticazione
 - Session-based security
+- Architettura modulare JavaScript
+- Pattern MVC e DAO
+
+🎨 DESIGN DECISIONS:
+- Dark theme moderno con accenti dorati
+- Layout responsive mobile-first
+- Componenti Bootstrap con customizzazioni
+- Tipografia system e iconografia consistente
+- UX ottimizzata per accessibilità e performance
 
 Questa applicazione rappresenta un sistema completo per la gestione di una palestra,
-con tutte le funzionalità necessarie per amministratori, trainer e clienti.
+con tutte le funzionalità necessarie per amministratori, trainer e clienti, implementato
+con scelte architetturali e di design moderne e scalabili.
 
 ================================================================================
                                 FINE DOCUMENTAZIONE

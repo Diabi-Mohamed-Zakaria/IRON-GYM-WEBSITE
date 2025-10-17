@@ -17,6 +17,20 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET /api/classes/trainer - classi del trainer corrente
+router.get('/trainer', ensureAuthenticated, ensureTrainer, async (req, res) => {
+  try {
+    console.log(`Loading classes for trainer ID: ${req.user.id}`);
+    const classDAO = new ClassDAO();
+    const classes = await classDAO.getClassesByTrainer(req.user.id);
+    console.log(`Found ${classes.length} classes for trainer ${req.user.id}:`, classes);
+    res.json(classes);
+  } catch (err) {
+    console.error('Error loading trainer classes:', err);
+    res.status(500).json({ error: 'Errore del server.' });
+  }
+});
+
 // GET /api/classes/:id - dettaglio classe
 router.get('/:id', async (req, res) => {
   try {

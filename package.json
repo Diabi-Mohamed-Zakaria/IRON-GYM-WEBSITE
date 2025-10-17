@@ -18,6 +18,7 @@
   "author": "Diabi Mohamed Zakaria 20054154",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "bootstrap": "^5.3.5",
     "bootstrap-icons": "^1.13.1",
     "connect-flash": "^0.1.1",
