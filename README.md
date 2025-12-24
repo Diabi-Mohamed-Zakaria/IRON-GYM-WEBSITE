@@ -163,12 +163,6 @@ Il progetto utilizza configurazioni di default. Per personalizzare:
 - **Promise-based**: Gestione asincrona consistente
 - **Modular Design**: Codice organizzato in moduli
 
-### Best Practices Implementate
-- Validazione input
-- Gestione errori
-- Logging
-- Codice documentato
-- Struttura scalabile
 
 ## 🐛 Risoluzione Problemi
 
@@ -188,13 +182,11 @@ npm install
 
 ## 📞 Supporto
 
-Per problemi o domande sul progetto, consultare:
-- Documentazione del codice
-- Commenti nei file sorgente
-- Log del server per debug
+Per problemi o domande sul progetto:
+Mail: mohamedzakariadiabi@gmial.com
 
 ---
 
 **Versione**: 1.0  
-**Data**: 2024  
-**Sviluppatore**: Team IRON GYM
+**Data**: 2025 
+**Sviluppatore**: Diabi M Zakaria
