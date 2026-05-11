@@ -2,7 +2,7 @@
                     DOCUMENTAZIONE COMPLETA - IRON GYM WEB APPLICATION
 ================================================================================
 
-AUTORE: Diabi Mohamed Zakaria 20054154
+AUTORE: Diabi Mohamed Zakaria  
 VERSIONE: 1.0.0
 DESCRIZIONE: Applicazione web per gestione palestra IRON GYM
 

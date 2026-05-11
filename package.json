@@ -15,7 +15,7 @@
     "nodejs",
     "express"
   ],
-  "author": "Diabi Mohamed Zakaria 20054154",
+  "author": "Diabi Mohamed Zakaria  ",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^6.0.0",
