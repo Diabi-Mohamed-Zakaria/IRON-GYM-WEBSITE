@@ -323,4 +323,13 @@ router.get('/bookings', ensureAuthenticated, async (req, res) => {
   }
 });
 
+/**
+ * GET /shader-demo - Demo dell'animated shader background
+ */
+router.get('/shader-demo', (req, res) => {
+  res.render('shader-demo', {
+    title: 'Animated Shader Background - Demo'
+  });
+});
+
 module.exports = router;

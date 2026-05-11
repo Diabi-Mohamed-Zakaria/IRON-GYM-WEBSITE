@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Shader Background - Demo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/stylesheets/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        .demo-content {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+        }
+
+        .demo-content h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #f7d98b, #eab308, #b45309);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .demo-content p {
+            font-size: 1.2rem;
+            color: #9ca3af;
+            max-width: 600px;
+            margin-bottom: 30px;
+        }
+
+        .demo-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-demo {
+            padding: 12px 30px;
+            border-radius: 8px;
+            border: 1px solid var(--primary-2);
+            background: linear-gradient(135deg, #f7d98b 0%, var(--primary) 60%, var(--primary-2) 100%);
+            color: #111;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .btn-demo:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(234, 179, 8, 0.4);
+            text-decoration: none;
+            color: #111;
+        }
+
+        .btn-demo.secondary {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-demo.secondary:hover {
+            background: rgba(234, 179, 8, 0.1);
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Shader Background Container -->
+    <div id="shader-container"></div>
+
+    <!-- Demo Content -->
+    <div class="demo-content">
+        <h1>Animated Shader Background</h1>
+        <p>Un bellissimo background dinamico creato con Three.js e shader GLSL personalizzati.</p>
+        <p style="font-size: 0.95rem; color: #6b7280;">Completamente compatibile con il tuo stack EJS + Bootstrap + JavaScript</p>
+
+        <div class="demo-buttons">
+            <a href="/" class="btn-demo">Torna alla Home</a>
+            <button onclick="location.reload()" class="btn-demo secondary">Ricarica Demo</button>
+        </div>
+    </div>
+
+    <!-- Script per il Shader -->
+    <script src="/javascripts/animated-shader-background.js"></script>
+    <script>
+        // Inizializza il componente shader quando la pagina è caricata
+        document.addEventListener('DOMContentLoaded', () => {
+            const shaderBackground = new AnimatedShaderBackground('#shader-container');
+            
+            // Opzionale: pulisci le risorse quando navighi via
+            window.addEventListener('beforeunload', () => {
+                shaderBackground.dispose();
+            });
+        });
+    </script>
+</body>
+</html>

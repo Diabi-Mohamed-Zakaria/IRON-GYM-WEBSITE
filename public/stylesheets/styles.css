@@ -489,3 +489,41 @@ input[readonly] {
 .trainer-avatar {
   padding: 20px;
 }
+
+/* ===== Animated Shader Background ===== */
+#shader-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: -1;
+}
+
+#shader-container canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Floating Animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Shader Divider */
+.divider {
+  position: relative;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(234, 179, 8, 0.5), transparent);
+  margin: 40px 0;
+}
